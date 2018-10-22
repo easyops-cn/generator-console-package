@@ -1,0 +1,27 @@
+{
+  "name": "@easyops/<%= packageName %>",
+  "version": "0.0.0",
+  "main": "public_api.ts",
+  "types": "public_api.ts",
+  "repository": "https://git.easyops.local/anyclouds/Console-W",
+  "license": "UNLICENSED",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "ng-packagr -w -p package.json",
+    "prebuild": "rimraf dist",
+    "build": "ng-packagr -p package.json",
+    "prepublishOnly": "npm run build",
+    "postprebulishOnly": "cd dist"
+  },
+  "ngPackage": {
+    "lib": {
+      "entryFile": "public_api.ts"
+    }
+  },
+  "peerDependencies": {
+    "@angular/common": "^6.0.3",
+    "@angular/core": "^6.0.3"
+  }
+}

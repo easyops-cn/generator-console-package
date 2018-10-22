@@ -1,0 +1,4 @@
+{
+  "name": "@easyops/<%= packageName %>",
+  "license": "UNLICENSED"
+}
