@@ -1,5 +1,4 @@
-# generator-console-package [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
-> 
+# generator-console-package [![Build Status](https://travis-ci.org/easyops-cn/generator-console-package.svg)](https://travis-ci.org/easyops-cn/generator-console-package) [![Dependency Status](https://david-dm.org/easyops-cn/generator-console-package/dev-status.svg)](https://david-dm.org/easyops-cn/generator-console-package#info=devDependencies)
 
 ## Installation
 
