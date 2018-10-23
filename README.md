@@ -1,4 +1,4 @@
-# generator-console-package [![Build Status](https://travis-ci.org/easyops-cn/generator-console-package.svg)](https://travis-ci.org/easyops-cn/generator-console-package) [![Dependency Status](https://david-dm.org/easyops-cn/generator-console-package/dev-status.svg)](https://david-dm.org/easyops-cn/generator-console-package#info=devDependencies)
+# generator-console-package [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
 
 ## Installation
 
@@ -25,12 +25,10 @@ yo console-package
 
 ## License
 
-unlicense © [stevewang]()
+UNLICENSED
 
 
-[npm-image]: https://badge.fury.io/js/generator-console-package.svg
-[npm-url]: https://npmjs.org/package/generator-console-package
-[travis-image]: https://travis-ci.org//generator-console-package.svg?branch=master
-[travis-url]: https://travis-ci.org//generator-console-package
-[daviddm-image]: https://david-dm.org//generator-console-package.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org//generator-console-package
+[travis-image]: https://travis-ci.org/easyops-cn/generator-console-package.svg?branch=master
+[travis-url]: https://travis-ci.org/easyops-cn/generator-console-package
+[daviddm-image]: https://david-dm.org/easyops-cn/generator-console-package.svg?theme=shields.io
+[daviddm-url]: https://david-dm.org/easyops-cn/generator-console-package
