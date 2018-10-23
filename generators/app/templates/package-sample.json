@@ -5,9 +5,7 @@
   "types": "public_api.ts",
   "repository": "https://git.easyops.local/anyclouds/Console-W",
   "license": "UNLICENSED",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "start": "ng-packagr -w -p package.json",
     "prebuild": "rimraf dist",

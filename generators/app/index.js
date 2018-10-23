@@ -60,11 +60,13 @@ module.exports = class extends Generator {
       this.props
     );
     this.fs.copyTpl(
-      [
-        srcPath + '/package.json',
-        srcPath + '/README.md',
-      ],
-      destPath,
+      srcPath + '/package-sample.json',
+      destPath + '/package.json',
+      this.props
+    );
+    this.fs.copyTpl(
+      srcPath + '/README.md',
+      destPath + '/README.md',
       this.props
     );
     this.fs.copyTpl(
