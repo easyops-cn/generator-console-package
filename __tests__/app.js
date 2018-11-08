@@ -5,8 +5,13 @@ const helpers = require('yeoman-test');
 const { execSync } = require('child_process');
 
 describe('generator-console-package:app', () => {
-  const packageName = 'just-for-test-' + Math.random().toString(36).substring(7);
+  const random = Math.random().toString(36).substring(7);
+  const Random = random.substr(0, 1).toUpperCase() + random.substr(1);
+  const packageName = `just-for-test-${random}`;
+  const pascalCaseName = `JustForTest${Random}`;
+
   beforeAll(() => {
+
     return helpers
       .run(path.join(__dirname, '../generators/app'))
       .withPrompts({ packageName });
@@ -14,20 +19,51 @@ describe('generator-console-package:app', () => {
 
   it('creates files', () => {
     assert.file([
-      'packages/' + packageName + '/src/components/' + packageName + '.component.html',
-      'packages/' + packageName + '/src/components/' + packageName + '.component.scss',
-      'packages/' + packageName + '/src/components/' + packageName + '.component.spec.ts',
-      'packages/' + packageName + '/src/components/' + packageName + '.component.ts',
-      'packages/' + packageName + '/src/index.module.ts',
-      'packages/' + packageName + '/package.json',
-      'packages/' + packageName + '/public_api.ts',
-      'packages/' + packageName + '/README.md'
+      `packages/${packageName}/src/components/${packageName}.component.html`,
+      `packages/${packageName}/src/components/${packageName}.component.scss`,
+      `packages/${packageName}/src/components/${packageName}.component.spec.ts`,
+      `packages/${packageName}/src/components/${packageName}.component.ts`,
+      `packages/${packageName}/src/index.module.ts`,
+      `packages/${packageName}/package.json`,
+      `packages/${packageName}/public_api.ts`,
+      `packages/${packageName}/README.md`
     ]);
   });
 
+  it('create correct files', () => {
+    assert.fileContent(
+      `packages/${packageName}/src/components/${packageName}.component.ts`,
+      `selector: "${packageName}"`
+    );
+    assert.fileContent(
+      `packages/${packageName}/src/components/${packageName}.component.ts`,
+      `templateUrl: "./${packageName}.component.html"`
+    );
+    assert.fileContent(
+      `packages/${packageName}/src/components/${packageName}.component.ts`,
+      `styleUrls: ["./${packageName}.component.scss"]`
+    );
+    assert.fileContent(
+      `packages/${packageName}/src/components/${packageName}.component.ts`,
+      `styleUrls: ["./${packageName}.component.scss"]`
+    );
+    assert.fileContent(
+      `packages/${packageName}/src/components/${packageName}.component.ts`,
+      `export class ${pascalCaseName}Component implements OnInit`
+    );
+    assert.fileContent(
+      `packages/${packageName}/src/index.module.ts`,
+      `export class ${pascalCaseName}Module`
+    );
+    assert.fileContent(
+      `packages/${packageName}/package.json`,
+      `"name": "@easyops/${packageName}"`
+    );
+  })
+
   afterAll(() => {
     const output = execSync('yarn unlink', {
-      cwd: 'packages/' + packageName + '/dist',
+      cwd: `packages/${packageName}/dist`,
       encoding: 'utf8'
     });
     // eslint-disable-next-line
