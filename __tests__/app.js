@@ -1,5 +1,6 @@
 'use strict';
 const path = require('path');
+const fs = require('fs-extra');
 const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
 const { execSync } = require('child_process');
@@ -14,11 +15,15 @@ describe('generator-console-package:app', () => {
 
     return helpers
       .run(path.join(__dirname, '../generators/app'))
+      .inTmpDir(dir => {
+        fs.copySync(path.join(__dirname, '../generators/app/templates/mock'), dir);
+      })
       .withPrompts({ packageName });
   });
 
-  it('creates files', () => {
+  it('should create files', () => {
     assert.file([
+      // Created files:
       `packages/${packageName}/src/components/${packageName}.component.html`,
       `packages/${packageName}/src/components/${packageName}.component.scss`,
       `packages/${packageName}/src/components/${packageName}.component.spec.ts`,
@@ -26,11 +31,16 @@ describe('generator-console-package:app', () => {
       `packages/${packageName}/src/index.module.ts`,
       `packages/${packageName}/package.json`,
       `packages/${packageName}/public_api.ts`,
-      `packages/${packageName}/README.md`
+      `packages/${packageName}/README.md`,
+
+      // Modified files:
+      'angular.json',
+      'tsconfig.json',
+      'webpack/ConfigFactory/angular-packages.json'
     ]);
   });
 
-  it('create correct files', () => {
+  it('should create correct files', () => {
     assert.fileContent(
       `packages/${packageName}/src/components/${packageName}.component.ts`,
       `selector: "${packageName}"`
@@ -58,6 +68,21 @@ describe('generator-console-package:app', () => {
     assert.fileContent(
       `packages/${packageName}/package.json`,
       `"name": "@easyops/${packageName}"`
+    );
+  });
+
+  it('should update files', () => {
+    assert.fileContent(
+      'angular.json',
+      `"${packageName}": {\n      "root": "packages/${packageName}/src"`
+    );
+    assert.fileContent(
+      'tsconfig.json',
+      `"@easyops/${packageName}": [\n        "packages/${packageName}"\n      ]`
+    );
+    assert.fileContent(
+      'webpack/ConfigFactory/angular-packages.json',
+      `[\n  "packages/console-common",\n  "packages/${packageName}"\n]\n`
     );
   })
 

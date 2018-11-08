@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "base": {
+      "root": "src/client/scripts",
+      "projectType": "application",
+      "schematics": {}
+    }
+  }
+}

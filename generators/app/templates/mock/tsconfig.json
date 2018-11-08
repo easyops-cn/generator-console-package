@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@easyops/console-common": ["packages/console-common"],
+      "@easyops/console-schema": ["packages/console-schema/src"]
+    }
+  }
+}

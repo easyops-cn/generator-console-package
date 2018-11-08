@@ -4,9 +4,11 @@ const yosay = require('yosay');
 module.exports = class extends Generator {
   initializing() {
     this.log(yosay('Welcome to the Console Package generator!'));
+    this.conflicter.force = true;
   }
 
   async prompting() {
+    // package name
     this.props = await this.prompt([
       {
         type: 'input',
@@ -15,6 +17,8 @@ module.exports = class extends Generator {
       }
     ]);
     const { packageName } = this.props;
+
+    // module name
     Object.assign(
       this.props,
       await this.prompt([
@@ -29,6 +33,8 @@ module.exports = class extends Generator {
         }
       ])
     );
+
+    // component name
     Object.assign(
       this.props,
       await this.prompt([
@@ -93,6 +99,58 @@ module.exports = class extends Generator {
       destPath + '/src/components/' + componentName + '.component.ts',
       this.props
     );
+
+    const tsconfigPath = 'tsconfig.json';
+    this.fs.copy(tsconfigPath, tsconfigPath, {
+      process: content => {
+        const tsconfig = JSON.parse(content);
+        tsconfig.compilerOptions.paths[`@easyops/${packageName}`] = [`packages/${packageName}`];
+        return JSON.stringify(tsconfig, null, '  ') + '\n';
+      }
+    });
+
+    const angularPackagesPath = 'webpack/ConfigFactory/angular-packages.json';
+    this.fs.copy(angularPackagesPath, angularPackagesPath, {
+      process: content => {
+        const angularPackages = JSON.parse(content);
+        angularPackages.push(`packages/${packageName}`);
+        return JSON.stringify(angularPackages, null, '  ') + '\n';
+      }
+    });
+
+    const angularPath = 'angular.json';
+    this.fs.copy(angularPath, angularPath, {
+      process: content => {
+        const angular = JSON.parse(content);
+        angular.projects[packageName] = {
+          "root": `packages/${packageName}/src`,
+          "projectType": "application",
+          "schematics": {
+            "@schematics/angular:component": {
+              "path": `packages/${packageName}/src`,
+              "styleext": "scss"
+            },
+            "@schematics/angular:directive": {
+              "path": `packages/${packageName}/src`
+            },
+            "@schematics/angular:module": {
+              "path": `packages/${packageName}/src`
+            },
+            "@schematics/angular:service":{
+              "path": `packages/${packageName}/src`
+            },
+            "@schematics/angular:pipe": {
+              "path": `packages/${packageName}/src`
+            },
+            "@schematics/angular:class": {
+              "path": `packages/${packageName}/src`,
+              "spec": true
+            }
+          }
+        };
+        return JSON.stringify(angular, null, '  ') + '\n';
+      }
+    });
   }
 
   install() {
