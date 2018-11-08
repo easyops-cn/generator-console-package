@@ -1,6 +1,6 @@
 {
   "name": "generator-console-package",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Yeoman generator for EasyOps console package",
   "homepage": "https://github.com/easyops-cn/generator-console-package",
   "author": {
