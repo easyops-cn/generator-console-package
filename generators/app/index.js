@@ -23,7 +23,7 @@ module.exports = class extends Generator {
           name: 'moduleName',
           message: "What's the name of your package's default module?",
           default:
-            packageName.replace(/^[a-z]|-[a-z]/g, match =>
+            packageName.replace(/^[a-z]|-[a-zA-Z0-9]/g, match =>
               match.replace('-', '').toUpperCase()
             ) + 'Module'
         }
@@ -41,7 +41,7 @@ module.exports = class extends Generator {
       ])
     );
     const { componentName } = this.props;
-    this.props.componentClassName = componentName.replace(/^[a-z]|-[a-z]/g, match =>
+    this.props.componentClassName = componentName.replace(/^[a-z]|-[a-zA-Z0-9]/g, match =>
       match.replace('-', '').toUpperCase()
     ) + 'Component';
   }
