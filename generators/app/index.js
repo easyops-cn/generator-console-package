@@ -109,15 +109,6 @@ module.exports = class extends Generator {
       }
     });
 
-    const angularPackagesPath = 'webpack/ConfigFactory/angular-packages.json';
-    this.fs.copy(angularPackagesPath, angularPackagesPath, {
-      process: content => {
-        const angularPackages = JSON.parse(content);
-        angularPackages.push(`packages/${packageName}`);
-        return JSON.stringify(angularPackages, null, '  ') + '\n';
-      }
-    });
-
     const angularPath = 'angular.json';
     this.fs.copy(angularPath, angularPath, {
       process: content => {

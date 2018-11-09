@@ -35,8 +35,7 @@ describe('generator-console-package:app', () => {
 
       // Modified files:
       'angular.json',
-      'tsconfig.json',
-      'webpack/ConfigFactory/angular-packages.json'
+      'tsconfig.json'
     ]);
   });
 
@@ -79,10 +78,6 @@ describe('generator-console-package:app', () => {
     assert.fileContent(
       'tsconfig.json',
       `"@easyops/${packageName}": [\n        "packages/${packageName}"\n      ]`
-    );
-    assert.fileContent(
-      'webpack/ConfigFactory/angular-packages.json',
-      `[\n  "packages/console-common",\n  "packages/${packageName}"\n]\n`
     );
   })
 
