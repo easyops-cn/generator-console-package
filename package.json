@@ -55,5 +55,5 @@
     "prepublish": "yarn test",
     "test": "jest"
   },
-  "license": "UNLICENSED"
+  "license": "MIT"
 }

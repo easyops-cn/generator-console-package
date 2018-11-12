@@ -25,7 +25,7 @@ yo console-package
 
 ## License
 
-UNLICENSED
+MIT
 
 
 [travis-image]: https://travis-ci.org/easyops-cn/generator-console-package.svg?branch=master
