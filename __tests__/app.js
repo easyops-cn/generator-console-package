@@ -18,7 +18,10 @@ describe('generator-console-package:app', () => {
       .inTmpDir(dir => {
         fs.copySync(path.join(__dirname, '../generators/app/templates/mock'), dir);
       })
-      .withPrompts({ packageName });
+      .withPrompts({
+        scope: '@easyops',
+        packageName
+      });
   });
 
   it('should create files', () => {

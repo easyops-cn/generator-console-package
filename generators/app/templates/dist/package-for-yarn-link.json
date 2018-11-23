@@ -1,4 +1,4 @@
 {
-  "name": "@easyops/<%= packageName %>",
+  "name": "<%= scope %>/<%= packageName %>",
   "license": "UNLICENSED"
 }
