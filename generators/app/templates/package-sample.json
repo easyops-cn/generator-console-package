@@ -1,9 +1,9 @@
 {
-  "name": "@easyops/<%= packageName %>",
+  "name": "<%= scope %>/<%= packageName %>",
   "version": "0.0.0",
   "main": "public_api.ts",
   "types": "public_api.ts",
-  "repository": "https://git.easyops.local/anyclouds/Console-W",
+  "repository": "https://git.easyops.local/anyclouds/<%= repository %>",
   "license": "UNLICENSED",
   "files": ["dist"],
   "scripts": {
