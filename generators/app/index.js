@@ -104,52 +104,32 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    const srcPath = this.sourceRoot();
+    const srcPath = `${this.sourceRoot()}/library`;
     const { packageName, componentName, scope, subPackagePath } = this.props;
-    const destPath = subPackagePath + '/' + packageName;
+    const destPath = `${subPackagePath}/${packageName}`;
     this.fs.copy(
       srcPath + '/public_api.ts',
       destPath + '/public_api.ts'
     );
-    this.fs.copyTpl(
-      srcPath + '/dist/package-for-yarn-link.json',
-      destPath + '/dist/package.json',
-      this.props
-    );
-    this.fs.copyTpl(
-      srcPath + '/package-sample.json',
-      destPath + '/package.json',
-      this.props
-    );
-    this.fs.copyTpl(
-      srcPath + '/README.md',
-      destPath + '/README.md',
-      this.props
-    );
-    this.fs.copyTpl(
-      srcPath + '/src/index.module.ts',
-      destPath + '/src/index.module.ts',
-      this.props
-    );
-    this.fs.copyTpl(
-      srcPath + '/src/components/template.component.html',
-      destPath + '/src/components/' + componentName + '.component.html',
-      this.props
-    );
-    this.fs.copy(
-      srcPath + '/src/components/template.component.scss',
-      destPath + '/src/components/' + componentName + '.component.scss'
-    );
-    this.fs.copyTpl(
-      srcPath + '/src/components/template.component.spec.ts',
-      destPath + '/src/components/' + componentName + '.component.spec.ts',
-      this.props
-    );
-    this.fs.copyTpl(
-      srcPath + '/src/components/template.component.ts',
-      destPath + '/src/components/' + componentName + '.component.ts',
-      this.props
-    );
+
+    const tplPairs = {
+      'dist/package-for-yarn-link.json': 'dist/package.json',
+      'package-sample.json': 'package.json',
+      'README.md': 'README.md',
+      'src/index.module.ts': 'src/index.module.ts',
+      ...['html', 'scss', 'spec.ts', 'ts'].reduce((acc, ext) => {
+        acc[`src/components/template.component.${ext}`] = `src/components/${componentName}.component.${ext}`;
+        return acc;
+      }, {})
+    }
+
+    Object.entries(tplPairs).forEach(([from, to]) => {
+      this.fs.copyTpl(
+        `${srcPath}/${from}`,
+        `${destPath}/${to}`,
+        this.props
+      )
+    });
 
     const tsconfigPath = 'tsconfig.json';
     this.fs.copy(tsconfigPath, tsconfigPath, {

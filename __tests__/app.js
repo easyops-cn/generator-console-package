@@ -16,7 +16,7 @@ describe('generator-console-package:app', () => {
     return helpers
       .run(path.join(__dirname, '../generators/app'))
       .inTmpDir(dir => {
-        fs.copySync(path.join(__dirname, '../generators/app/templates/mock'), dir);
+        fs.copySync(path.join(__dirname, '../generators/app/templates/library/mock'), dir);
       })
       .withPrompts({
         scope: '@easyops',
