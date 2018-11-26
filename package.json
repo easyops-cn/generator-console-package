@@ -17,6 +17,7 @@
   ],
   "devDependencies": {
     "babel-eslint": "10.0.1",
+    "cross-env": "^5.2.0",
     "eslint": "5.9.0",
     "eslint-config-prettier": "3.1.0",
     "eslint-plugin-prettier": "3.0.0",
@@ -52,8 +53,8 @@
   "scripts": {
     "pretest": "eslint .",
     "precommit": "lint-staged",
-    "prepublish": "yarn test",
-    "test": "jest"
+    "prepublish": "cross-env NODE_ENV=testing yarn test",
+    "test": "cross-env NODE_ENV=testing jest"
   },
   "license": "MIT"
 }

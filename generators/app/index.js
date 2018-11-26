@@ -11,6 +11,10 @@ scopePropsMap.set('@plugin-common', {
   repository: 'console-plugins',
   subPackagePath: '@plugin-common'
 });
+scopePropsMap.set('@console-plugin', {
+  repository: 'console-plugins',
+  subPackagePath: 'packages'
+});
 const scopes = Array.from(scopePropsMap.keys());
 
 module.exports = class extends Generator {
@@ -86,59 +90,87 @@ module.exports = class extends Generator {
     );
 
     // component name
-    Object.assign(
-      this.props,
-      await this.prompt([
-        {
-          type: 'input',
-          name: 'componentName',
-          message: "What's the name of your component?",
-          default: packageName
-        }
-      ])
-    );
-    const { componentName } = this.props;
-    this.props.componentClassName = componentName.replace(/^[a-z]|-[a-zA-Z0-9]/g, match =>
-      match.replace('-', '').toUpperCase()
-    ) + 'Component';
+    if (this._isLibrary()) {
+      Object.assign(
+        this.props,
+        await this.prompt([
+          {
+            type: 'input',
+            name: 'componentName',
+            message: "What's the name of your component?",
+            default: packageName
+          }
+        ])
+      );
+      const { componentName } = this.props;
+      this.props.componentClassName = componentName.replace(/^[a-z]|-[a-zA-Z0-9]/g, match =>
+        match.replace('-', '').toUpperCase()
+      ) + 'Component';
+    }
+  }
+
+  _isLibrary() {
+    return this.props.scope !== '@console-plugin';
   }
 
   writing() {
-    const srcPath = `${this.sourceRoot()}/library`;
     const { packageName, componentName, scope, subPackagePath } = this.props;
     const destPath = `${subPackagePath}/${packageName}`;
-    this.fs.copy(
-      srcPath + '/public_api.ts',
-      destPath + '/public_api.ts'
-    );
+    const isLibrary = this._isLibrary();
+    const srcPath = `${this.sourceRoot()}/${isLibrary ? 'library' : 'plugin'}`;
 
-    const tplPairs = {
-      'dist/package-for-yarn-link.json': 'dist/package.json',
-      'package-sample.json': 'package.json',
-      'README.md': 'README.md',
-      'src/index.module.ts': 'src/index.module.ts',
-      ...['html', 'scss', 'spec.ts', 'ts'].reduce((acc, ext) => {
-        acc[`src/components/template.component.${ext}`] = `src/components/${componentName}.component.${ext}`;
-        return acc;
-      }, {})
+    let srcPairs, tplPairs;
+
+    if (isLibrary) {
+      srcPairs = {
+        'public_api.ts': 'public_api.ts'
+      };
+
+      tplPairs = {
+        'dist/package-for-yarn-link.json': 'dist/package.json',
+        'package-sample.json': 'package.json',
+        'README.md': 'README.md',
+        'src/index.module.ts': 'src/index.module.ts',
+        ...['html', 'scss', 'spec.ts', 'ts'].reduce((acc, ext) => {
+          acc[`src/components/template.component.${ext}`] = `src/components/${componentName}.component.${ext}`;
+          return acc;
+        }, {})
+      }
+    } else {
+      srcPairs = {
+        'tsconfig.json': 'tsconfig.json',
+        'src/pages/index/index.component.html': 'src/pages/index/index.component.html',
+        'src/pages/index/index.component.scss': 'src/pages/index/index.component.scss',
+        'src/pages/index/index.component.spec.ts': 'src/pages/index/index.component.spec.ts',
+        'src/pages/index/index.component.ts': 'src/pages/index/index.component.ts',
+      };
+
+      tplPairs = {
+        'package-sample.json': 'package.json',
+        'README.md': 'README.md',
+        'src/index.module.ts': 'src/index.module.ts',
+        'src/index.states.ts': 'src/index.states.ts',
+      }
     }
 
-    Object.entries(tplPairs).forEach(([from, to]) => {
-      this.fs.copyTpl(
-        `${srcPath}/${from}`,
-        `${destPath}/${to}`,
-        this.props
-      )
+    Object.entries(srcPairs).forEach(([from, to]) => {
+      this.fs.copy(`${srcPath}/${from}`, `${destPath}/${to}`);
     });
 
-    const tsconfigPath = 'tsconfig.json';
-    this.fs.copy(tsconfigPath, tsconfigPath, {
-      process: content => {
-        const tsconfig = JSON.parse(content);
-        tsconfig.compilerOptions.paths[`${scope}/${packageName}`] = [`${subPackagePath}/${packageName}`];
-        return JSON.stringify(tsconfig, null, '  ') + '\n';
-      }
+    Object.entries(tplPairs).forEach(([from, to]) => {
+      this.fs.copyTpl(`${srcPath}/${from}`, `${destPath}/${to}`, this.props);
     });
+
+    if (isLibrary) {
+      const tsconfigPath = 'tsconfig.json';
+      this.fs.copy(tsconfigPath, tsconfigPath, {
+        process: content => {
+          const tsconfig = JSON.parse(content);
+          tsconfig.compilerOptions.paths[`${scope}/${packageName}`] = [`${subPackagePath}/${packageName}`];
+          return JSON.stringify(tsconfig, null, '  ') + '\n';
+        }
+      });
+    }
 
     const angularPath = 'angular.json';
     this.fs.copy(angularPath, angularPath, {
@@ -176,11 +208,33 @@ module.exports = class extends Generator {
   }
 
   install() {
+    if (process.env.NODE_ENV === 'testing') {
+      return;
+    }
     const done = this.async();
-    const distPath = this.props.subPackagePath + '/' + this.props.packageName + '/dist';
-    const child = this.spawnCommand('yarn', ['link'], { cwd: distPath });
-    child.on("close", () => {
-      done();
+    let distPath = `${this.props.subPackagePath}/${this.props.packageName}`;
+    let total = 1;
+    const decrease = () => {
+      total -= 1;
+      if (total <=0) {
+        done();
+      }
+    };
+    if (this._isLibrary()) {
+      distPath += '/dist';
+    } else {
+      total += 1;
+    }
+    const childOfYarnLink = this.spawnCommand('yarn', ['link'], { cwd: distPath });
+    childOfYarnLink.on("close", () => {
+      decrease();
     });
+
+    if (!this._isLibrary()) {
+      const childOfYarn = this.spawnCommand('yarn', [], { cwd: distPath });
+      childOfYarn.on("close", () => {
+        decrease();
+      });
+    }
   }
 };
