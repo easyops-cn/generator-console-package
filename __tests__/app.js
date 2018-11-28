@@ -1,14 +1,19 @@
 'use strict';
 const path = require('path');
+const { EventEmitter } = require('events');
 const fs = require('fs-extra');
 const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
+const { createSandbox } = require('sinon');
+
+const sandbox = createSandbox();
 
 describe('generator-console-package:app:@easyops', () => {
   const random = Math.random().toString(36).substring(7);
   const Random = random.substr(0, 1).toUpperCase() + random.substr(1);
   const packageName = `just-for-test-${random}`;
   const pascalCaseName = `JustForTest${Random}`;
+  let mockSpawn;
 
   beforeAll(() => {
 
@@ -16,11 +21,25 @@ describe('generator-console-package:app:@easyops', () => {
       .run(path.join(__dirname, '../generators/app'))
       .inTmpDir(dir => {
         fs.copySync(path.join(__dirname, '../generators/app/templates/library/mock'), dir);
+        fs.writeJsonSync(path.resolve(dir, './package.json'), { name: 'easyops-web-console' });
+      })
+      .on('ready', gen => {
+        mockSpawn = sandbox.stub(gen, 'spawnCommand').callsFake(() => {
+          const spawnEvent = new EventEmitter();
+          process.nextTick(() => {
+            spawnEvent.emit('close');
+          });
+          return spawnEvent;
+        });
       })
       .withPrompts({
         scope: '@easyops',
         packageName
       });
+  });
+
+  afterAll(() => {
+    sandbox.restore();
   });
 
   it('should create files', () => {
@@ -81,7 +100,15 @@ describe('generator-console-package:app:@easyops', () => {
       'tsconfig.json',
       `"@easyops/${packageName}": [\n        "packages/${packageName}"\n      ]`
     );
-  })
+  });
+
+  it('should run `yarn link`', () => {
+    expect(mockSpawn.calledOnceWithExactly('yarn', ['link'], {
+      cwd: `packages/${packageName}/dist`
+    })).toBe(true);
+
+    expect(mockSpawn.callCount).toBe(1);
+  });
 });
 
 describe('generator-console-package:app:@plugin-common', () => {
@@ -89,6 +116,7 @@ describe('generator-console-package:app:@plugin-common', () => {
   const Random = random.substr(0, 1).toUpperCase() + random.substr(1);
   const packageName = `just-for-test-2-${random}`;
   const pascalCaseName = `JustForTest2${Random}`;
+  let mockSpawn;
 
   beforeAll(() => {
 
@@ -96,11 +124,25 @@ describe('generator-console-package:app:@plugin-common', () => {
       .run(path.join(__dirname, '../generators/app'))
       .inTmpDir(dir => {
         fs.copySync(path.join(__dirname, '../generators/app/templates/library/mock'), dir);
+        fs.writeJsonSync(path.resolve(dir, './package.json'), { name: 'console-plugins' });
+      })
+      .on('ready', gen => {
+        mockSpawn = sandbox.stub(gen, 'spawnCommand').callsFake(() => {
+          const spawnEvent = new EventEmitter();
+          process.nextTick(() => {
+            spawnEvent.emit('close');
+          });
+          return spawnEvent;
+        });
       })
       .withPrompts({
         scope: '@plugin-common',
         packageName
       });
+  });
+
+  afterAll(() => {
+    sandbox.restore();
   });
 
   it('should create files', () => {
@@ -161,7 +203,15 @@ describe('generator-console-package:app:@plugin-common', () => {
       'tsconfig.json',
       `"@plugin-common/${packageName}": [\n        "@plugin-common/${packageName}"\n      ]`
     );
-  })
+  });
+
+  it('should run `yarn link`', () => {
+    expect(mockSpawn.calledOnceWithExactly('yarn', ['link'], {
+      cwd: `@plugin-common/${packageName}/dist`
+    })).toBe(true);
+
+    expect(mockSpawn.callCount).toBe(1);
+  });
 });
 
 describe('generator-console-package:app:@console-plugin', () => {
@@ -169,6 +219,7 @@ describe('generator-console-package:app:@console-plugin', () => {
   const Random = random.substr(0, 1).toUpperCase() + random.substr(1);
   const packageName = `just-for-test-3-${random}`;
   const pascalCaseName = `JustForTest3${Random}`;
+  let mockSpawn;
 
   beforeAll(() => {
 
@@ -177,10 +228,23 @@ describe('generator-console-package:app:@console-plugin', () => {
       .inTmpDir(dir => {
         fs.copySync(path.join(__dirname, '../generators/app/templates/library/mock'), dir);
       })
+      .on('ready', gen => {
+        mockSpawn = sandbox.stub(gen, 'spawnCommand').callsFake(() => {
+          const spawnEvent = new EventEmitter();
+          process.nextTick(() => {
+            spawnEvent.emit('close');
+          });
+          return spawnEvent;
+        });
+      })
       .withPrompts({
         scope: '@console-plugin',
         packageName
       });
+  });
+
+  afterAll(() => {
+    sandbox.restore();
   });
 
   it('should create files', () => {
@@ -217,5 +281,17 @@ describe('generator-console-package:app:@console-plugin', () => {
       'angular.json',
       `"${packageName}": {\n      "root": "packages/${packageName}/src"`
     );
+  });
+
+  it('should run `yarn link` and `yarn`', () => {
+    expect(mockSpawn.calledWithExactly('yarn', ['link'], {
+      cwd: `packages/${packageName}`
+    })).toBe(true);
+
+    expect(mockSpawn.calledWithExactly('yarn', [], {
+      cwd: `packages/${packageName}`
+    })).toBe(true);
+
+    expect(mockSpawn.callCount).toBe(2);
   });
 });
