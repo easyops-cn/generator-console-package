@@ -67,7 +67,7 @@ module.exports = class extends Generator {
           type: 'input',
           name: 'packageName',
           message: "What's the name of your package (in kebab-case)?",
-          validate: value => /^[a-zA-Z]+(-[a-zA-Z0-9]+)*$/.test(value)
+          validate: value => /^[a-z]+(-[a-z0-9]+)*$/.test(value)
         }
       ])
     );
@@ -208,33 +208,21 @@ module.exports = class extends Generator {
   }
 
   install() {
-    if (process.env.NODE_ENV === 'testing') {
-      return;
-    }
     const done = this.async();
     let distPath = `${this.props.subPackagePath}/${this.props.packageName}`;
-    let total = 1;
-    const decrease = () => {
-      total -= 1;
-      if (total <=0) {
-        done();
-      }
-    };
     if (this._isLibrary()) {
       distPath += '/dist';
-    } else {
-      total += 1;
     }
     const childOfYarnLink = this.spawnCommand('yarn', ['link'], { cwd: distPath });
     childOfYarnLink.on("close", () => {
-      decrease();
+      if (this._isLibrary()) {
+        done();
+      } else {
+        const childOfYarn = this.spawnCommand('yarn', [], { cwd: distPath });
+        childOfYarn.on("close", () => {
+          done();
+        });
+      }
     });
-
-    if (!this._isLibrary()) {
-      const childOfYarn = this.spawnCommand('yarn', [], { cwd: distPath });
-      childOfYarn.on("close", () => {
-        decrease();
-      });
-    }
   }
 };
