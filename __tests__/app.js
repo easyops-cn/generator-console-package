@@ -4,6 +4,7 @@ const { EventEmitter } = require('events');
 const fs = require('fs-extra');
 const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
+const Generator = require("../generators/app");
 const { createSandbox } = require('sinon');
 
 const sandbox = createSandbox();
@@ -409,4 +410,15 @@ describe('generator-console-package:app:@console-plugin', () => {
 
     expect(mockSpawn.callCount).toBe(2);
   });
+});
+
+describe('flattenModuleId', () => {
+  const testcases = [
+    ['foo', 'bar', 'foo-bar'],
+    [undefined, 'bar/qux', 'bar-qux'],
+    ['foo', 'bar/qux', 'foo-bar-qux']
+  ];
+  it.each(testcases)("flattenModuleId(%s, %s) should return %s", (scope, packageName, expected) => {
+    expect(Generator.flattenModuleId(scope, packageName)).toBe(expected);
+  })
 });
