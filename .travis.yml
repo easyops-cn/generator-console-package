@@ -1,4 +1,8 @@
 language: node_js
 node_js:
   - v10
-  - v8
+install:
+  - yarn
+script:
+  - yarn test
+  - yarn coveralls
