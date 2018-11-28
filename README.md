@@ -1,4 +1,4 @@
-# generator-console-package [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
+# generator-console-package [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage Status][coveralls-image]][coveralls-url]
 
 ## Installation
 
@@ -30,5 +30,7 @@ MIT
 
 [travis-image]: https://travis-ci.org/easyops-cn/generator-console-package.svg?branch=master
 [travis-url]: https://travis-ci.org/easyops-cn/generator-console-package
+[coveralls-image]: https://coveralls.io/repos/github/easyops-cn/generator-console-package/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/easyops-cn/generator-console-package?branch=master
 [daviddm-image]: https://david-dm.org/easyops-cn/generator-console-package.svg?theme=shields.io
 [daviddm-url]: https://david-dm.org/easyops-cn/generator-console-package
