@@ -24,7 +24,7 @@
     "@easyops/console-plugin-core": "^4.0.4",
     "@easyops/console-vendors": "^7.0.0",
     "@uirouter/angular": "^2.0.0",
-    "@uirouter/core": "^5.0.17",
+    "@uirouter/core": "5.0.19",
     "rxjs": "^6.0.0",
     "zone.js": "~0.8.26"
   },
@@ -37,7 +37,7 @@
     "@easyops/console-plugin-core": "^4.0.4",
     "@easyops/console-vendors": "^7.0.0",
     "@uirouter/angular": "^2.0.0",
-    "@uirouter/core": "^5.0.17",
+    "@uirouter/core": "5.0.19",
     "rxjs": "^6.0.0",
     "zone.js": "~0.8.26"
   },
