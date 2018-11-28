@@ -6,7 +6,7 @@ import { Extension } from "@easyops/console-plugin-core";
 import { states } from "./index.states";
 import { IndexComponent } from './pages/index/index.component';
 
-@Extension("@console-plugin/just-for-test")
+@Extension("@console-plugin/<%= packageName %>")
 @NgModule({
   imports: [
     CommonModule,
