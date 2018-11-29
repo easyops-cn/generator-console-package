@@ -89,6 +89,10 @@ describe('generator-console-package:app:@easyops', () => {
       `packages/${packageName}/package.json`,
       `"name": "@easyops/${packageName}"`
     );
+    assert.fileContent(
+      `packages/${packageName}/package.json`,
+      '"start": "ng-packagr -w -p package.json"'
+    );
   });
 
   it('should update files', () => {
@@ -192,6 +196,10 @@ describe('generator-console-package:app:@brick', () => {
       `@brick/${packageName}/package.json`,
       `"name": "@brick/${packageName}"`
     );
+    assert.noFileContent(
+      `@brick/${packageName}/package.json`,
+      '"start": "ng-packagr -w -p package.json"'
+    );
   });
 
   it('should update files', () => {
@@ -294,6 +302,10 @@ describe('generator-console-package:app:@plugin-common', () => {
     assert.fileContent(
       `@plugin-common/${packageName}/package.json`,
       `"name": "@plugin-common/${packageName}"`
+    );
+    assert.fileContent(
+      `@plugin-common/${packageName}/package.json`,
+      '"start": "ng-packagr -w -p package.json"'
     );
   });
 

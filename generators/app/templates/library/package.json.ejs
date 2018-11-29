@@ -7,7 +7,9 @@
   "license": "UNLICENSED",
   "files": ["dist"],
   "scripts": {
+<% if (!removeScriptsStart) { %>
     "start": "ng-packagr -w -p package.json",
+<% } %>
     "prebuild": "rimraf dist",
     "build": "ng-packagr -p package.json",
     "prepublishOnly": "npm run build",
