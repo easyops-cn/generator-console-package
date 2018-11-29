@@ -5,15 +5,23 @@ const yosay = require('yosay');
 const scopePropsMap = new Map();
 scopePropsMap.set('@easyops', {
   repository: 'Console-W',
-  subPackagePath: 'packages'
+  subPackagePath: 'packages',
+  removeScriptsStart: false
+});
+scopePropsMap.set('@brick', {
+  repository: 'console-plugins',
+  subPackagePath: '@brick',
+  removeScriptsStart: true
 });
 scopePropsMap.set('@plugin-common', {
   repository: 'console-plugins',
-  subPackagePath: '@plugin-common'
+  subPackagePath: '@plugin-common',
+  removeScriptsStart: false
 });
 scopePropsMap.set('@console-plugin', {
   repository: 'console-plugins',
-  subPackagePath: 'packages'
+  subPackagePath: 'packages',
+  removeScriptsStart: false
 });
 const scopes = Array.from(scopePropsMap.keys());
 
@@ -128,7 +136,7 @@ module.exports = class extends Generator {
 
       tplPairs = {
         'dist/package-for-yarn-link.json': 'dist/package.json',
-        'package-sample.json': 'package.json',
+        'package.json.ejs': 'package.json',
         'README.md': 'README.md',
         'src/index.module.ts': 'src/index.module.ts',
         ...['html', 'scss', 'spec.ts', 'ts'].reduce((acc, ext) => {
