@@ -111,11 +111,114 @@ describe('generator-console-package:app:@easyops', () => {
   });
 });
 
+describe('generator-console-package:app:@brick', () => {
+  const random = Math.random().toString(36).substring(7);
+  const Random = random.substr(0, 1).toUpperCase() + random.substr(1);
+  const packageName = `just-for-test-brick-${random}`;
+  const pascalCaseName = `JustForTestBrick${Random}`;
+  let mockSpawn;
+
+  beforeAll(() => {
+
+    return helpers
+      .run(path.join(__dirname, '../generators/app'))
+      .inTmpDir(dir => {
+        fs.copySync(path.join(__dirname, '../generators/app/templates/library/mock'), dir);
+        fs.writeJsonSync(path.resolve(dir, './package.json'), { name: 'unknown' });
+      })
+      .on('ready', gen => {
+        mockSpawn = sandbox.stub(gen, 'spawnCommand').callsFake(() => {
+          const spawnEvent = new EventEmitter();
+          process.nextTick(() => {
+            spawnEvent.emit('close');
+          });
+          return spawnEvent;
+        });
+      })
+      .withPrompts({
+        scope: '@brick',
+        packageName
+      });
+  });
+
+  afterAll(() => {
+    sandbox.restore();
+  });
+
+  it('should create files', () => {
+    assert.file([
+      // Created files:
+      `@brick/${packageName}/src/components/${packageName}.component.html`,
+      `@brick/${packageName}/src/components/${packageName}.component.scss`,
+      `@brick/${packageName}/src/components/${packageName}.component.spec.ts`,
+      `@brick/${packageName}/src/components/${packageName}.component.ts`,
+      `@brick/${packageName}/src/index.module.ts`,
+      `@brick/${packageName}/package.json`,
+      `@brick/${packageName}/public_api.ts`,
+      `@brick/${packageName}/README.md`,
+
+      // Modified files:
+      'angular.json',
+      'tsconfig.json'
+    ]);
+  });
+
+  it('should create correct files', () => {
+    assert.fileContent(
+      `@brick/${packageName}/src/components/${packageName}.component.ts`,
+      `selector: "${packageName}"`
+    );
+    assert.fileContent(
+      `@brick/${packageName}/src/components/${packageName}.component.ts`,
+      `templateUrl: "./${packageName}.component.html"`
+    );
+    assert.fileContent(
+      `@brick/${packageName}/src/components/${packageName}.component.ts`,
+      `styleUrls: ["./${packageName}.component.scss"]`
+    );
+    assert.fileContent(
+      `@brick/${packageName}/src/components/${packageName}.component.ts`,
+      `styleUrls: ["./${packageName}.component.scss"]`
+    );
+    assert.fileContent(
+      `@brick/${packageName}/src/components/${packageName}.component.ts`,
+      `export class ${pascalCaseName}Component implements OnInit`
+    );
+    assert.fileContent(
+      `@brick/${packageName}/src/index.module.ts`,
+      `export class ${pascalCaseName}Module`
+    );
+    assert.fileContent(
+      `@brick/${packageName}/package.json`,
+      `"name": "@brick/${packageName}"`
+    );
+  });
+
+  it('should update files', () => {
+    assert.fileContent(
+      'angular.json',
+      `"${packageName}": {\n      "root": "@brick/${packageName}/src"`
+    );
+    assert.fileContent(
+      'tsconfig.json',
+      `"@brick/${packageName}": [\n        "@brick/${packageName}"\n      ]`
+    );
+  });
+
+  it('should run `yarn link`', () => {
+    expect(mockSpawn.calledOnceWithExactly('yarn', ['link'], {
+      cwd: `@brick/${packageName}/dist`
+    })).toBe(true);
+
+    expect(mockSpawn.callCount).toBe(1);
+  });
+});
+
 describe('generator-console-package:app:@plugin-common', () => {
   const random = Math.random().toString(36).substring(7);
   const Random = random.substr(0, 1).toUpperCase() + random.substr(1);
-  const packageName = `just-for-test-2-${random}`;
-  const pascalCaseName = `JustForTest2${Random}`;
+  const packageName = `just-for-test-common-${random}`;
+  const pascalCaseName = `JustForTestCommon${Random}`;
   let mockSpawn;
 
   beforeAll(() => {
@@ -217,8 +320,8 @@ describe('generator-console-package:app:@plugin-common', () => {
 describe('generator-console-package:app:@console-plugin', () => {
   const random = Math.random().toString(36).substring(7);
   const Random = random.substr(0, 1).toUpperCase() + random.substr(1);
-  const packageName = `just-for-test-3-${random}`;
-  const pascalCaseName = `JustForTest3${Random}`;
+  const packageName = `just-for-test-plugin-${random}`;
+  const pascalCaseName = `JustForTestPlugin${Random}`;
   let mockSpawn;
 
   beforeAll(() => {

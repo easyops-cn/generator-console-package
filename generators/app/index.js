@@ -7,6 +7,10 @@ scopePropsMap.set('@easyops', {
   repository: 'Console-W',
   subPackagePath: 'packages'
 });
+scopePropsMap.set('@brick', {
+  repository: 'console-plugins',
+  subPackagePath: '@brick'
+});
 scopePropsMap.set('@plugin-common', {
   repository: 'console-plugins',
   subPackagePath: '@plugin-common'
