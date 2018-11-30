@@ -20,12 +20,6 @@ yarn link <%= scope %>/<%= packageName %>
 
 ## publish
 
-`lerna publish` 暂时无法用来发布 Angular Package, 你可以使用以下方式进行发布：
-
 ```
-lerna publish --scope=<%= scope %>/<%= packageName %> --skip-npm
-lerna run build --scope=<%= scope %>/<%= packageName %>
-lerna exec --scope=<%= scope %>/<%= packageName %> npm publish ./dist -- --registry=https://registry.npm.easyops.local
+lerna publish
 ```
-
-注意，与`lerna publish` 不同，`npm publish` 是直接把当前目录发布到注册表中，因此需要先调用`lerna publish`的能力进行版本确定，但是跳过 npm 发布阶段，然后再单独执行`npm publish ./dist`发布 `ng-packagr` 生成的包。

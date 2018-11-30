@@ -81,6 +81,13 @@ module.exports = class extends Generator {
     );
     const { packageName } = this.props;
 
+    // generate flat module id
+    // For design, @see https://github.com/ng-packagr/ng-packagr/blob/v4.4.1/docs/DESIGN.md#tools-and-implementation-details
+    // For implementation, @see https://github.com/ng-packagr/ng-packagr/blob/v4.4.1/src/lib/ng-package-format/entry-point.ts#L157
+    Object.assign(this.props, {
+      flattenModuleId: Generator.flattenModuleId(scope, packageName)
+    });
+
     // module name
     Object.assign(
       this.props,
@@ -234,3 +241,11 @@ module.exports = class extends Generator {
     });
   }
 };
+
+Generator.flattenModuleId = function (scope, packageName) {
+  const separator = "-";
+  if (scope !== undefined) {
+    return [scope].concat(packageName.split("/")).join(separator);
+  }
+  return packageName.split("/").join(separator);
+}

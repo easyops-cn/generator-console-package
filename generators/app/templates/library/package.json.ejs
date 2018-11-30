@@ -1,19 +1,17 @@
 {
   "name": "<%= scope %>/<%= packageName %>",
   "version": "0.0.0",
-  "main": "public_api.ts",
-  "types": "public_api.ts",
+  "main": "dist/bundles/<%= flattenModuleId %>.umd.js",
   "repository": "https://git.easyops.local/anyclouds/<%= repository %>",
   "license": "UNLICENSED",
-  "files": ["dist"],
+  "files": ["dist/"],
   "scripts": {
 <% if (!removeScriptsStart) { %>
     "start": "ng-packagr -w -p package.json",
 <% } %>
     "prebuild": "rimraf dist",
-    "build": "ng-packagr -p package.json",
-    "prepublishOnly": "npm run build",
-    "postprebulishOnly": "cd dist"
+    "build": "ng-packagr -p package.json && rimraf dist/package.json",
+    "prepublishOnly": "npm run build"
   },
   "ngPackage": {
     "lib": {
@@ -23,5 +21,14 @@
   "peerDependencies": {
     "@angular/common": "^6.0.3",
     "@angular/core": "^6.0.3"
-  }
+  },
+  "module": "dist/fesm5/<%= flattenModuleId %>.js",
+  "es2015": "dist/fesm2015/<%= flattenModuleId %>.js",
+  "esm5": "dist/esm5/<%= flattenModuleId %>.js",
+  "esm2015": "dist/esm2015/<%= flattenModuleId %>.js",
+  "fesm5": "dist/fesm5/<%= flattenModuleId %>.js",
+  "fesm2015": "dist/fesm2015/<%= flattenModuleId %>.js",
+  "typings": "dist/<%= flattenModuleId %>.d.ts",
+  "metadata": "dist/<%= flattenModuleId %>.metadata.json",
+  "sideEffects": false
 }
