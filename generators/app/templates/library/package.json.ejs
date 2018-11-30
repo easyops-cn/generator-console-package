@@ -11,8 +11,7 @@
 <% } %>
     "prebuild": "rimraf dist",
     "build": "ng-packagr -p package.json && rimraf dist/package.json",
-    "prepublishOnly": "npm run build",
-    "postprebulishOnly": "cd dist"
+    "prepublishOnly": "npm run build"
   },
   "ngPackage": {
     "lib": {
@@ -30,5 +29,6 @@
   "fesm5": "dist/fesm5/<%= flattenModuleId %>.js",
   "fesm2015": "dist/fesm2015/<%= flattenModuleId %>.js",
   "typings": "dist/<%= flattenModuleId %>.d.ts",
-  "metadata": "dist/<%= flattenModuleId %>.metadata.json"
+  "metadata": "dist/<%= flattenModuleId %>.metadata.json",
+  "sideEffects": false
 }
