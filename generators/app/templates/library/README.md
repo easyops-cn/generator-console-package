@@ -14,7 +14,7 @@ cd <%= subPackagePath %>/<%= packageName %>/dist
 yarn link
 
 # 3. 使用 link
-cd ~/console-plugins/<%= subPackagePath %>/YOUR-PLUGIN
+cd /PATH/TO/OTHER/PACKAGE
 yarn link <%= scope %>/<%= packageName %>
 ```
 

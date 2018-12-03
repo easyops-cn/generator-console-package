@@ -86,24 +86,44 @@ describe('generator-console-package:app:@easyops', () => {
       `packages/${packageName}/src/index.module.ts`,
       `export class ${pascalCaseName}Module`
     );
-    assert.fileContent(
+    assert.jsonFileContent(
       `packages/${packageName}/package.json`,
-      `"name": "@easyops/${packageName}"`
+      {
+        name: `@easyops/${packageName}`
+      }
     );
-    assert.fileContent(
+    assert.jsonFileContent(
       `packages/${packageName}/package.json`,
-      '"start": "ng-packagr -w -p package.json"'
+      {
+        scripts: {
+          start: "ng-packagr -w -p package.json"
+        }
+      }
     );
   });
 
   it('should update files', () => {
-    assert.fileContent(
+    assert.jsonFileContent(
       'angular.json',
-      `"${packageName}": {\n      "root": "packages/${packageName}/src"`
+      {
+        projects: {
+          [packageName]: {
+            root: `packages/${packageName}/src`
+          }
+        }
+      }
     );
-    assert.fileContent(
+    assert.jsonFileContent(
       'tsconfig.json',
-      `"@easyops/${packageName}": [\n        "packages/${packageName}"\n      ]`
+      {
+        compilerOptions: {
+          paths: {
+            [`@easyops/${packageName}`]: [
+              `packages/${packageName}/public_api.ts`
+            ]
+          }
+        }
+      }
     );
   });
 
@@ -191,26 +211,44 @@ describe('generator-console-package:app:@brick', () => {
     );
     assert.fileContent(
       `@brick/${packageName}/src/index.module.ts`,
-      `export class ${pascalCaseName}Module`
+      `export class Brick${pascalCaseName}Module`
     );
-    assert.fileContent(
+    assert.jsonFileContent(
       `@brick/${packageName}/package.json`,
-      `"name": "@brick/${packageName}"`
+      {
+        name: `@brick/${packageName}`
+      }
     );
-    assert.noFileContent(
+    assert.noJsonFileContent(
       `@brick/${packageName}/package.json`,
-      '"start": "ng-packagr -w -p package.json"'
+      {
+        scripts: {
+          start: "ng-packagr -w -p package.json"
+        }
+      }
     );
   });
 
   it('should update files', () => {
-    assert.fileContent(
+    assert.jsonFileContent(
       'angular.json',
-      `"${packageName}": {\n      "root": "@brick/${packageName}/src"`
+      {
+        projects: {
+          [`brick-${packageName}`]: {
+            root: `@brick/${packageName}/src`
+          }
+        }
+      }
     );
-    assert.fileContent(
+    assert.jsonFileContent(
       'tsconfig.json',
-      `"@brick/${packageName}": [\n        "@brick/${packageName}"\n      ]`
+      {
+        compilerOptions: {
+          paths: {
+            [`@brick/${packageName}`]: undefined
+          }
+        }
+      }
     );
   });
 
@@ -300,24 +338,42 @@ describe('generator-console-package:app:@plugin-common', () => {
       `@plugin-common/${packageName}/src/index.module.ts`,
       `export class ${pascalCaseName}Module`
     );
-    assert.fileContent(
+    assert.jsonFileContent(
       `@plugin-common/${packageName}/package.json`,
-      `"name": "@plugin-common/${packageName}"`
+      {
+        name: `@plugin-common/${packageName}`
+      }
     );
-    assert.fileContent(
+    assert.jsonFileContent(
       `@plugin-common/${packageName}/package.json`,
-      '"start": "ng-packagr -w -p package.json"'
+      {
+        scripts: {
+          start: "ng-packagr -w -p package.json"
+        }
+      }
     );
   });
 
   it('should update files', () => {
-    assert.fileContent(
+    assert.jsonFileContent(
       'angular.json',
-      `"${packageName}": {\n      "root": "@plugin-common/${packageName}/src"`
+      {
+        projects: {
+          [packageName]: {
+            root: `@plugin-common/${packageName}/src`
+          }
+        }
+      }
     );
-    assert.fileContent(
+    assert.jsonFileContent(
       'tsconfig.json',
-      `"@plugin-common/${packageName}": [\n        "@plugin-common/${packageName}"\n      ]`
+      {
+        compilerOptions: {
+          paths: {
+            [`@plugin-common/${packageName}`]: undefined
+          }
+        }
+      }
     );
   });
 
@@ -386,16 +442,34 @@ describe('generator-console-package:app:@console-plugin', () => {
       `packages/${packageName}/src/index.module.ts`,
       `export class ${pascalCaseName}Module`
     );
-    assert.fileContent(
+    assert.jsonFileContent(
       `packages/${packageName}/package.json`,
-      `"name": "@console-plugin/${packageName}"`
+      {
+        name: `@console-plugin/${packageName}`
+      }
     );
   });
 
   it('should update files', () => {
-    assert.fileContent(
+    assert.jsonFileContent(
       'angular.json',
-      `"${packageName}": {\n      "root": "packages/${packageName}/src"`
+      {
+        projects: {
+          [packageName]: {
+            root: `packages/${packageName}/src`
+          }
+        }
+      }
+    );
+    assert.jsonFileContent(
+      'tsconfig.json',
+      {
+        compilerOptions: {
+          paths: {
+            [`@console-plugin/${packageName}`]: undefined
+          }
+        }
+      }
     );
   });
 
