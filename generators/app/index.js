@@ -242,10 +242,16 @@ module.exports = class extends Generator {
   }
 };
 
+/**
+ * compute flatten module id from scope and package name
+ * @param scope {string} a scope is prefixed by `@`
+ * @param packageName {string}
+ * @returns {string}
+ */
 Generator.flattenModuleId = function (scope, packageName) {
   const separator = "-";
   if (scope !== undefined) {
-    return [scope].concat(packageName.split("/")).join(separator);
+    return [scope.substring(1)].concat(packageName.split("/")).join(separator);
   }
   return packageName.split("/").join(separator);
 }
