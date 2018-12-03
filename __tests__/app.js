@@ -414,9 +414,9 @@ describe('generator-console-package:app:@console-plugin', () => {
 
 describe('flattenModuleId', () => {
   const testcases = [
-    ['foo', 'bar', 'foo-bar'],
+    ['@foo', 'bar', 'foo-bar'],
     [undefined, 'bar/qux', 'bar-qux'],
-    ['foo', 'bar/qux', 'foo-bar-qux']
+    ['@foo', 'bar/qux', 'foo-bar-qux']
   ];
   it.each(testcases)("flattenModuleId(%s, %s) should return %s", (scope, packageName, expected) => {
     expect(Generator.flattenModuleId(scope, packageName)).toBe(expected);
