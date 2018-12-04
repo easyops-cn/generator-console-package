@@ -6,22 +6,32 @@ const scopePropsMap = new Map();
 scopePropsMap.set('@easyops', {
   repository: 'Console-W',
   subPackagePath: 'packages',
-  removeScriptsStart: false
+  removeScriptsStart: false,
+  tsconfigPath: true,
+  isLibrary: true
 });
 scopePropsMap.set('@brick', {
   repository: 'console-plugins',
   subPackagePath: '@brick',
-  removeScriptsStart: true
+  removeScriptsStart: true,
+  tsconfigPath: false,
+  isLibrary: true,
+  projectNamePrefix: 'brick-',
+  moduleNamePrefix: 'Brick'
 });
 scopePropsMap.set('@plugin-common', {
   repository: 'console-plugins',
   subPackagePath: '@plugin-common',
-  removeScriptsStart: false
+  removeScriptsStart: false,
+  tsconfigPath: false,
+  isLibrary: true
 });
 scopePropsMap.set('@console-plugin', {
   repository: 'console-plugins',
   subPackagePath: 'packages',
-  removeScriptsStart: false
+  removeScriptsStart: false,
+  tsconfigPath: false,
+  isLibrary: false
 });
 const scopes = Array.from(scopePropsMap.keys());
 
@@ -79,7 +89,7 @@ module.exports = class extends Generator {
         }
       ])
     );
-    const { packageName } = this.props;
+    const { packageName, moduleNamePrefix, isLibrary } = this.props;
 
     // generate flat module id
     // For design, @see https://github.com/ng-packagr/ng-packagr/blob/v4.4.1/docs/DESIGN.md#tools-and-implementation-details
@@ -97,6 +107,7 @@ module.exports = class extends Generator {
           name: 'moduleName',
           message: "What's the name of your package's default module?",
           default:
+            (moduleNamePrefix === undefined ? '' : moduleNamePrefix) +
             packageName.replace(/^[a-z]|-[a-zA-Z0-9]/g, match =>
               match.replace('-', '').toUpperCase()
             ) + 'Module'
@@ -105,7 +116,7 @@ module.exports = class extends Generator {
     );
 
     // component name
-    if (this._isLibrary()) {
+    if (isLibrary) {
       Object.assign(
         this.props,
         await this.prompt([
@@ -124,14 +135,9 @@ module.exports = class extends Generator {
     }
   }
 
-  _isLibrary() {
-    return this.props.scope !== '@console-plugin';
-  }
-
   writing() {
-    const { packageName, componentName, scope, subPackagePath } = this.props;
+    const { packageName, componentName, scope, subPackagePath, isLibrary, projectNamePrefix, tsconfigPath } = this.props;
     const destPath = `${subPackagePath}/${packageName}`;
-    const isLibrary = this._isLibrary();
     const srcPath = `${this.sourceRoot()}/${isLibrary ? 'library' : 'plugin'}`;
 
     let srcPairs, tplPairs;
@@ -176,22 +182,23 @@ module.exports = class extends Generator {
       this.fs.copyTpl(`${srcPath}/${from}`, `${destPath}/${to}`, this.props);
     });
 
-    if (isLibrary) {
-      const tsconfigPath = 'tsconfig.json';
-      this.fs.copy(tsconfigPath, tsconfigPath, {
+    if (tsconfigPath) {
+      const tsconfigJson = 'tsconfig.json';
+      this.fs.copy(tsconfigJson, tsconfigJson, {
         process: content => {
           const tsconfig = JSON.parse(content);
-          tsconfig.compilerOptions.paths[`${scope}/${packageName}`] = [`${subPackagePath}/${packageName}`];
+          tsconfig.compilerOptions.paths[`${scope}/${packageName}`] = [`${subPackagePath}/${packageName}/public_api.ts`];
           return JSON.stringify(tsconfig, null, '  ') + '\n';
         }
       });
     }
 
     const angularPath = 'angular.json';
+    const projectName = (projectNamePrefix === undefined ? '' : projectNamePrefix) + packageName;
     this.fs.copy(angularPath, angularPath, {
       process: content => {
         const angular = JSON.parse(content);
-        angular.projects[packageName] = {
+        angular.projects[projectName] = {
           "root": `${subPackagePath}/${packageName}/src`,
           "projectType": "application",
           "schematics": {
@@ -224,13 +231,14 @@ module.exports = class extends Generator {
 
   install() {
     const done = this.async();
-    let distPath = `${this.props.subPackagePath}/${this.props.packageName}`;
-    if (this._isLibrary()) {
+    const { subPackagePath, packageName, isLibrary } = this.props;
+    let distPath = `${subPackagePath}/${packageName}`;
+    if (isLibrary) {
       distPath += '/dist';
     }
     const childOfYarnLink = this.spawnCommand('yarn', ['link'], { cwd: distPath });
     childOfYarnLink.on("close", () => {
-      if (this._isLibrary()) {
+      if (isLibrary) {
         done();
       } else {
         const childOfYarn = this.spawnCommand('yarn', [], { cwd: distPath });
