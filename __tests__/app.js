@@ -429,6 +429,7 @@ describe('generator-console-package:app:@console-plugin', () => {
       `packages/${packageName}/src/index.module.ts`,
       `packages/${packageName}/src/index.states.ts`,
       `packages/${packageName}/package.json`,
+      `packages/${packageName}/plugins-default.json`,
       `packages/${packageName}/README.md`,
       `packages/${packageName}/tsconfig.json`,
 
