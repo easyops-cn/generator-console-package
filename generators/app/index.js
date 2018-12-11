@@ -8,7 +8,8 @@ scopePropsMap.set('@easyops', {
   subPackagePath: 'packages',
   removeScriptsStart: false,
   tsconfigPath: true,
-  isLibrary: true
+  isLibrary: true,
+  needPluginsConfig: false
 });
 scopePropsMap.set('@brick', {
   repository: 'console-plugins',
@@ -16,6 +17,7 @@ scopePropsMap.set('@brick', {
   removeScriptsStart: true,
   tsconfigPath: false,
   isLibrary: true,
+  needPluginsConfig: false,
   projectNamePrefix: 'brick-',
   moduleNamePrefix: 'Brick'
 });
@@ -24,14 +26,16 @@ scopePropsMap.set('@plugin-common', {
   subPackagePath: '@plugin-common',
   removeScriptsStart: false,
   tsconfigPath: false,
-  isLibrary: true
+  isLibrary: true,
+  needPluginsConfig: false
 });
 scopePropsMap.set('@console-plugin', {
   repository: 'console-plugins',
   subPackagePath: 'packages',
   removeScriptsStart: false,
   tsconfigPath: false,
-  isLibrary: false
+  isLibrary: false,
+  needPluginsConfig: true
 });
 const scopes = Array.from(scopePropsMap.keys());
 
@@ -136,7 +140,7 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    const { packageName, componentName, scope, subPackagePath, isLibrary, projectNamePrefix, tsconfigPath } = this.props;
+    const { packageName, componentName, scope, subPackagePath, isLibrary, projectNamePrefix, tsconfigPath, needPluginsConfig } = this.props;
     const destPath = `${subPackagePath}/${packageName}`;
     const srcPath = `${this.sourceRoot()}/${isLibrary ? 'library' : 'plugin'}`;
 
@@ -172,6 +176,10 @@ module.exports = class extends Generator {
         'src/index.module.ts': 'src/index.module.ts',
         'src/index.states.ts': 'src/index.states.ts',
       }
+    }
+
+    if (needPluginsConfig) {
+      srcPairs['plugins-default.json'] = 'plugins-default.json';
     }
 
     Object.entries(srcPairs).forEach(([from, to]) => {
