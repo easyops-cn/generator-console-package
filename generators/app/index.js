@@ -2,9 +2,11 @@ const fs = require('fs');
 const Generator = require('yeoman-generator');
 const yosay = require('yosay');
 const scopesJson = require('./scopes.json');
+const pkg = require('../../package.json');
 
 const scopePropsMap = new Map(Object.entries(scopesJson));
 const scopes = Array.from(scopePropsMap.keys());
+const generatorVersion = pkg.version;
 
 module.exports = class extends Generator {
   initializing() {
@@ -119,7 +121,6 @@ module.exports = class extends Generator {
       };
 
       tplPairs = {
-        'dist/package-for-yarn-link.json': 'dist/package.json',
         'package.json.ejs': 'package.json',
         'README.md': 'README.md',
         'src/index.module.ts': 'src/index.module.ts',
@@ -154,7 +155,10 @@ module.exports = class extends Generator {
     });
 
     Object.entries(tplPairs).forEach(([from, to]) => {
-      this.fs.copyTpl(`${srcPath}/${from}`, `${destPath}/${to}`, this.props);
+      this.fs.copyTpl(`${srcPath}/${from}`, `${destPath}/${to}`, {
+        ...this.props,
+        generatorVersion
+      });
     });
 
     if (tsconfigPath) {
@@ -206,17 +210,16 @@ module.exports = class extends Generator {
 
   install() {
     const done = this.async();
-    const { subPackagePath, packageName, isLibrary } = this.props;
-    let distPath = `${subPackagePath}/${packageName}`;
-    if (isLibrary) {
-      distPath += '/dist';
-    }
-    const childOfYarnLink = this.spawnCommand('yarn', ['link'], { cwd: distPath });
+    const { subPackagePath, scope, packageName, isLibrary } = this.props;
+    const distPath = `${subPackagePath}/${packageName}`;
+    const childOfYarnLink = this.spawnCommand('lerna', ['exec', 'yarn', 'link', `--scope=${scope}/${packageName}`]);
     childOfYarnLink.on("close", () => {
       if (isLibrary) {
         done();
       } else {
-        const childOfYarn = this.spawnCommand('yarn', [], { cwd: distPath });
+        const childOfYarn = this.spawnCommand('yarn', [], {
+          cwd: distPath
+        });
         childOfYarn.on("close", () => {
           done();
         });
