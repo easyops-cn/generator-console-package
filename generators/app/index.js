@@ -1,6 +1,7 @@
 const fs = require('fs');
 const Generator = require('yeoman-generator');
 const yosay = require('yosay');
+const { flattenModuleId, validatePackageName } = require('./processor');
 const scopesJson = require('./scopes.json');
 const pkg = require('../../package.json');
 
@@ -58,7 +59,7 @@ module.exports = class extends Generator {
           type: 'input',
           name: 'packageName',
           message: "What's the name of your package (in kebab-case)?",
-          validate: value => /^[a-z]+(-[a-z0-9]+)*$/.test(value)
+          validate: validatePackageName
         }
       ])
     );
@@ -68,7 +69,7 @@ module.exports = class extends Generator {
     // For design, @see https://github.com/ng-packagr/ng-packagr/blob/v4.4.1/docs/DESIGN.md#tools-and-implementation-details
     // For implementation, @see https://github.com/ng-packagr/ng-packagr/blob/v4.4.1/src/lib/ng-package-format/entry-point.ts#L157
     Object.assign(this.props, {
-      flattenModuleId: Generator.flattenModuleId(scope, packageName)
+      flattenModuleId: flattenModuleId(scope, packageName)
     });
 
     // module name
@@ -227,17 +228,3 @@ module.exports = class extends Generator {
     });
   }
 };
-
-/**
- * compute flatten module id from scope and package name
- * @param scope {string} a scope is prefixed by `@`
- * @param packageName {string}
- * @returns {string}
- */
-Generator.flattenModuleId = function (scope, packageName) {
-  const separator = "-";
-  if (scope !== undefined) {
-    return [scope.substring(1)].concat(packageName.split("/")).join(separator);
-  }
-  return packageName.split("/").join(separator);
-}

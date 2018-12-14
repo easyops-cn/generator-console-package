@@ -4,8 +4,8 @@ const { EventEmitter } = require('events');
 const fs = require('fs-extra');
 const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
-const Generator = require("../generators/app");
 const { createSandbox } = require('sinon');
+const { flattenModuleId, validatePackageName } = require('../generators/app/processor');
 
 const sandbox = createSandbox();
 
@@ -483,7 +483,19 @@ describe('flattenModuleId', () => {
     [undefined, 'bar/qux', 'bar-qux'],
     ['@foo', 'bar/qux', 'foo-bar-qux']
   ];
+
   it.each(testcases)("flattenModuleId(%s, %s) should return %s", (scope, packageName, expected) => {
-    expect(Generator.flattenModuleId(scope, packageName)).toBe(expected);
-  })
+    expect(flattenModuleId(scope, packageName)).toBe(expected);
+  });
+});
+
+describe('validatePackageName', () => {
+  const testcases = [
+    ['good-package-name', true],
+    ['badPackageName', false]
+  ];
+
+  it.each(testcases)("validatePackageName(%s) should return %s", (value, expected) => {
+    expect(validatePackageName(value)).toBe(expected);
+  });
 });
