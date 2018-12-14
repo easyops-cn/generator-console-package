@@ -43,7 +43,7 @@
     "testEnvironment": "node",
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "generators/app/index.js"
+      "generators/app/*.js"
     ]
   },
   "lint-staged": {

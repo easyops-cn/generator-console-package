@@ -1,43 +1,13 @@
 const fs = require('fs');
 const Generator = require('yeoman-generator');
 const yosay = require('yosay');
+const { flattenModuleId, validatePackageName } = require('./processor');
+const scopesJson = require('./scopes.json');
+const pkg = require('../../package.json');
 
-const scopePropsMap = new Map();
-scopePropsMap.set('@easyops', {
-  repository: 'Console-W',
-  subPackagePath: 'packages',
-  removeScriptsStart: false,
-  tsconfigPath: true,
-  isLibrary: true,
-  needPluginsConfig: false
-});
-scopePropsMap.set('@brick', {
-  repository: 'console-plugins',
-  subPackagePath: '@brick',
-  removeScriptsStart: true,
-  tsconfigPath: false,
-  isLibrary: true,
-  needPluginsConfig: false,
-  projectNamePrefix: 'brick-',
-  moduleNamePrefix: 'Brick'
-});
-scopePropsMap.set('@plugin-common', {
-  repository: 'console-plugins',
-  subPackagePath: '@plugin-common',
-  removeScriptsStart: false,
-  tsconfigPath: false,
-  isLibrary: true,
-  needPluginsConfig: false
-});
-scopePropsMap.set('@console-plugin', {
-  repository: 'console-plugins',
-  subPackagePath: 'packages',
-  removeScriptsStart: false,
-  tsconfigPath: false,
-  isLibrary: false,
-  needPluginsConfig: true
-});
+const scopePropsMap = new Map(Object.entries(scopesJson));
 const scopes = Array.from(scopePropsMap.keys());
+const generatorVersion = pkg.version;
 
 module.exports = class extends Generator {
   initializing() {
@@ -89,7 +59,7 @@ module.exports = class extends Generator {
           type: 'input',
           name: 'packageName',
           message: "What's the name of your package (in kebab-case)?",
-          validate: value => /^[a-z]+(-[a-z0-9]+)*$/.test(value)
+          validate: validatePackageName
         }
       ])
     );
@@ -99,7 +69,7 @@ module.exports = class extends Generator {
     // For design, @see https://github.com/ng-packagr/ng-packagr/blob/v4.4.1/docs/DESIGN.md#tools-and-implementation-details
     // For implementation, @see https://github.com/ng-packagr/ng-packagr/blob/v4.4.1/src/lib/ng-package-format/entry-point.ts#L157
     Object.assign(this.props, {
-      flattenModuleId: Generator.flattenModuleId(scope, packageName)
+      flattenModuleId: flattenModuleId(scope, packageName)
     });
 
     // module name
@@ -152,7 +122,6 @@ module.exports = class extends Generator {
       };
 
       tplPairs = {
-        'dist/package-for-yarn-link.json': 'dist/package.json',
         'package.json.ejs': 'package.json',
         'README.md': 'README.md',
         'src/index.module.ts': 'src/index.module.ts',
@@ -187,7 +156,10 @@ module.exports = class extends Generator {
     });
 
     Object.entries(tplPairs).forEach(([from, to]) => {
-      this.fs.copyTpl(`${srcPath}/${from}`, `${destPath}/${to}`, this.props);
+      this.fs.copyTpl(`${srcPath}/${from}`, `${destPath}/${to}`, {
+        ...this.props,
+        generatorVersion
+      });
     });
 
     if (tsconfigPath) {
@@ -239,17 +211,16 @@ module.exports = class extends Generator {
 
   install() {
     const done = this.async();
-    const { subPackagePath, packageName, isLibrary } = this.props;
-    let distPath = `${subPackagePath}/${packageName}`;
-    if (isLibrary) {
-      distPath += '/dist';
-    }
-    const childOfYarnLink = this.spawnCommand('yarn', ['link'], { cwd: distPath });
+    const { subPackagePath, scope, packageName, isLibrary } = this.props;
+    const distPath = `${subPackagePath}/${packageName}`;
+    const childOfYarnLink = this.spawnCommand('lerna', ['exec', 'yarn', 'link', `--scope=${scope}/${packageName}`]);
     childOfYarnLink.on("close", () => {
       if (isLibrary) {
         done();
       } else {
-        const childOfYarn = this.spawnCommand('yarn', [], { cwd: distPath });
+        const childOfYarn = this.spawnCommand('yarn', [], {
+          cwd: distPath
+        });
         childOfYarn.on("close", () => {
           done();
         });
@@ -257,17 +228,3 @@ module.exports = class extends Generator {
     });
   }
 };
-
-/**
- * compute flatten module id from scope and package name
- * @param scope {string} a scope is prefixed by `@`
- * @param packageName {string}
- * @returns {string}
- */
-Generator.flattenModuleId = function (scope, packageName) {
-  const separator = "-";
-  if (scope !== undefined) {
-    return [scope.substring(1)].concat(packageName.split("/")).join(separator);
-  }
-  return packageName.split("/").join(separator);
-}

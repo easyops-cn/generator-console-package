@@ -4,8 +4,8 @@ const { EventEmitter } = require('events');
 const fs = require('fs-extra');
 const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
-const Generator = require("../generators/app");
 const { createSandbox } = require('sinon');
+const { flattenModuleId, validatePackageName } = require('../generators/app/processor');
 
 const sandbox = createSandbox();
 
@@ -127,10 +127,8 @@ describe('generator-console-package:app:@easyops', () => {
     );
   });
 
-  it('should run `yarn link`', () => {
-    expect(mockSpawn.calledOnceWithExactly('yarn', ['link'], {
-      cwd: `packages/${packageName}/dist`
-    })).toBe(true);
+  it('should run `lerna exec yarn link`', () => {
+    expect(mockSpawn.calledOnceWithExactly('lerna', ['exec', 'yarn', 'link', `--scope=@easyops/${packageName}`])).toBe(true);
 
     expect(mockSpawn.callCount).toBe(1);
   });
@@ -252,10 +250,8 @@ describe('generator-console-package:app:@brick', () => {
     );
   });
 
-  it('should run `yarn link`', () => {
-    expect(mockSpawn.calledOnceWithExactly('yarn', ['link'], {
-      cwd: `@brick/${packageName}/dist`
-    })).toBe(true);
+  it('should run `lerna exec yarn link`', () => {
+    expect(mockSpawn.calledOnceWithExactly('lerna', ['exec', 'yarn', 'link', `--scope=@brick/${packageName}`])).toBe(true);
 
     expect(mockSpawn.callCount).toBe(1);
   });
@@ -377,10 +373,8 @@ describe('generator-console-package:app:@plugin-common', () => {
     );
   });
 
-  it('should run `yarn link`', () => {
-    expect(mockSpawn.calledOnceWithExactly('yarn', ['link'], {
-      cwd: `@plugin-common/${packageName}/dist`
-    })).toBe(true);
+  it('should run `lerna exec yarn link`', () => {
+    expect(mockSpawn.calledOnceWithExactly('lerna', ['exec', 'yarn', 'link', `--scope=@plugin-common/${packageName}`])).toBe(true);
 
     expect(mockSpawn.callCount).toBe(1);
   });
@@ -474,14 +468,10 @@ describe('generator-console-package:app:@console-plugin', () => {
     );
   });
 
-  it('should run `yarn link` and `yarn`', () => {
-    expect(mockSpawn.calledWithExactly('yarn', ['link'], {
-      cwd: `packages/${packageName}`
-    })).toBe(true);
+  it('should run `lerna exec yarn link` and `yarn`', () => {
+    expect(mockSpawn.calledWithExactly('lerna', ['exec', 'yarn', 'link', `--scope=@console-plugin/${packageName}`])).toBe(true);
 
-    expect(mockSpawn.calledWithExactly('yarn', [], {
-      cwd: `packages/${packageName}`
-    })).toBe(true);
+    expect(mockSpawn.calledWithExactly('yarn', [], { cwd: `packages/${packageName}` })).toBe(true);
 
     expect(mockSpawn.callCount).toBe(2);
   });
@@ -493,7 +483,19 @@ describe('flattenModuleId', () => {
     [undefined, 'bar/qux', 'bar-qux'],
     ['@foo', 'bar/qux', 'foo-bar-qux']
   ];
+
   it.each(testcases)("flattenModuleId(%s, %s) should return %s", (scope, packageName, expected) => {
-    expect(Generator.flattenModuleId(scope, packageName)).toBe(expected);
-  })
+    expect(flattenModuleId(scope, packageName)).toBe(expected);
+  });
+});
+
+describe('validatePackageName', () => {
+  const testcases = [
+    ['good-package-name', true],
+    ['badPackageName', false]
+  ];
+
+  it.each(testcases)("validatePackageName(%s) should return %s", (value, expected) => {
+    expect(validatePackageName(value)).toBe(expected);
+  });
 });
