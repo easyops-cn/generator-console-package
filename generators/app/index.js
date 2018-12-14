@@ -1,42 +1,9 @@
 const fs = require('fs');
 const Generator = require('yeoman-generator');
 const yosay = require('yosay');
+const scopesJson = require('./scopes.json');
 
-const scopePropsMap = new Map();
-scopePropsMap.set('@easyops', {
-  repository: 'Console-W',
-  subPackagePath: 'packages',
-  removeScriptsStart: false,
-  tsconfigPath: true,
-  isLibrary: true,
-  needPluginsConfig: false
-});
-scopePropsMap.set('@brick', {
-  repository: 'console-plugins',
-  subPackagePath: '@brick',
-  removeScriptsStart: true,
-  tsconfigPath: false,
-  isLibrary: true,
-  needPluginsConfig: false,
-  projectNamePrefix: 'brick-',
-  moduleNamePrefix: 'Brick'
-});
-scopePropsMap.set('@plugin-common', {
-  repository: 'console-plugins',
-  subPackagePath: '@plugin-common',
-  removeScriptsStart: false,
-  tsconfigPath: false,
-  isLibrary: true,
-  needPluginsConfig: false
-});
-scopePropsMap.set('@console-plugin', {
-  repository: 'console-plugins',
-  subPackagePath: 'packages',
-  removeScriptsStart: false,
-  tsconfigPath: false,
-  isLibrary: false,
-  needPluginsConfig: true
-});
+const scopePropsMap = new Map(Object.entries(scopesJson));
 const scopes = Array.from(scopePropsMap.keys());
 
 module.exports = class extends Generator {
