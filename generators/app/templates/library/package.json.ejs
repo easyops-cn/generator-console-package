@@ -6,25 +6,13 @@
   "license": "UNLICENSED",
   "files": ["dist/"],
   "scripts": {
-<% if (!removeScriptsStart) { %>
-    "start": "ng-packagr -w -p package.json",
-<% } %>
-    "prebuild": "rimraf dist",
-    "build": "ng-packagr -p package.json && rimraf dist/package.json",
+<% if (!removeScriptsStart) { %> "start": "WATCH_MODE=true node ../../ng-packagr",<% } %>
+    "build": "node ../../ng-packagr && rimraf dist/package.json",
     "prepublishOnly": "npm run build"
   },
-  "ngPackage": {
-    "lib": {
-      "entryFile": "public_api.ts",
-      "languageLevel": [
-        "dom",
-        "esnext"
-      ]
-    }
-  },
   "peerDependencies": {
-    "@angular/common": "^6.0.3",
-    "@angular/core": "^6.0.3",
+    "@angular/common": "^6.1.4",
+    "@angular/core": "^6.1.4",
     "@easyops/console-plugin-core": "^4.1.0"
   },
   "devDependencies": {

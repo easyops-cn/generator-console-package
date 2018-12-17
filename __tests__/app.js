@@ -96,7 +96,8 @@ describe('generator-console-package:app:@easyops', () => {
       `packages/${packageName}/package.json`,
       {
         scripts: {
-          start: "ng-packagr -w -p package.json"
+          start: "WATCH_MODE=true node ../../ng-packagr",
+          build: "node ../../ng-packagr && rimraf dist/package.json"
         }
       }
     );
@@ -221,7 +222,7 @@ describe('generator-console-package:app:@brick', () => {
       `@brick/${packageName}/package.json`,
       {
         scripts: {
-          start: "ng-packagr -w -p package.json"
+          start: "WATCH_MODE=true node ../../ng-packagr"
         }
       }
     );
@@ -344,7 +345,8 @@ describe('generator-console-package:app:@plugin-common', () => {
       `@plugin-common/${packageName}/package.json`,
       {
         scripts: {
-          start: "ng-packagr -w -p package.json"
+          start: "WATCH_MODE=true node ../../ng-packagr",
+          build: "node ../../ng-packagr && rimraf dist/package.json"
         }
       }
     );
