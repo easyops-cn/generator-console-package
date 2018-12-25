@@ -16,32 +16,32 @@
     "prepublishOnly": "npm test && npm run build"
   },
   "peerDependencies": {
-    "@angular/common": "^6.1.0",
-    "@angular/core": "^6.1.0",
-    "@angular/forms": "^6.1.0",
-    "@angular/platform-browser": "^6.1.0",
-    "@angular/router": "^6.1.0",
-    "@easyops/console-plugin-core": "^4.0.4",
-    "@easyops/console-vendors": "^8.0.0",
+    "@angular/common": "^6.1.10",
+    "@angular/core": "^6.1.10",
+    "@angular/forms": "^6.1.10",
+    "@angular/platform-browser": "^6.1.10",
+    "@angular/router": "^6.1.10",
+    "@easyops/console-plugin-core": "^4.1.2",
+    "@easyops/console-vendors": "^9.0.1",
     "@uirouter/angular": "^2.0.0",
     "@uirouter/core": "5.0.19",
     "rxjs": "^6.0.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
-    "@angular/common": "^6.1.0",
-    "@angular/core": "^6.1.0",
-    "@angular/forms": "^6.1.0",
-    "@angular/platform-browser": "^6.1.0",
-    "@angular/router": "^6.1.0",
-    "@easyops/console-plugin-core": "^4.0.4",
-    "@easyops/console-vendors": "^8.0.0",
+    "@angular/common": "^6.1.10",
+    "@angular/core": "^6.1.10",
+    "@angular/forms": "^6.1.10",
+    "@angular/platform-browser": "^6.1.10",
+    "@angular/router": "^6.1.10",
+    "@easyops/console-plugin-core": "^4.1.2",
+    "@easyops/console-vendors": "^9.0.1",
     "@uirouter/angular": "^2.0.0",
     "@uirouter/core": "5.0.19",
     "rxjs": "^6.0.0",
     "zone.js": "~0.8.26"
   },
   "dependencies": {
-    "@easyops/console-schema": "^1.9.0"
+    "@easyops/console-schema": "^2.2.0"
   }
 }
