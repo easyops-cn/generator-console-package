@@ -5,7 +5,8 @@
     "removeScriptsStart": false,
     "tsconfigPath": true,
     "isLibrary": true,
-    "needPluginsConfig": false
+    "needPluginsConfig": false,
+    "needDeployConfig": false
   },
   "@brick": {
     "repository": "console-plugins",
@@ -15,7 +16,8 @@
     "isLibrary": true,
     "needPluginsConfig": false,
     "projectNamePrefix": "brick-",
-    "moduleNamePrefix": "Brick"
+    "moduleNamePrefix": "Brick",
+    "needDeployConfig": false
   },
   "@plugin-common": {
     "repository": "console-plugins",
@@ -23,7 +25,8 @@
     "removeScriptsStart": false,
     "tsconfigPath": false,
     "isLibrary": true,
-    "needPluginsConfig": false
+    "needPluginsConfig": false,
+    "needDeployConfig": false
   },
   "@console-plugin": {
     "repository": "console-plugins",
@@ -31,6 +34,7 @@
     "removeScriptsStart": false,
     "tsconfigPath": false,
     "isLibrary": false,
-    "needPluginsConfig": true
+    "needPluginsConfig": true,
+    "needDeployConfig": true
   }
 }

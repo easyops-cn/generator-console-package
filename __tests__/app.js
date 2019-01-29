@@ -428,6 +428,11 @@ describe('generator-console-package:app:@console-plugin', () => {
       `packages/${packageName}/plugins-default.json`,
       `packages/${packageName}/README.md`,
       `packages/${packageName}/tsconfig.json`,
+      `packages/${packageName}/.pkgbuild/PKGBUILD`,
+      `packages/${packageName}/deploy/install_postscript.sh`,
+      `packages/${packageName}/deploy/package.conf.yaml`,
+      `packages/${packageName}/deploy/update_postscript.sh`,
+      `packages/${packageName}/deploy/update_prescript.sh`,
 
       // Modified files:
       'angular.json'
@@ -445,6 +450,14 @@ describe('generator-console-package:app:@console-plugin', () => {
         name: `@console-plugin/${packageName}`
       }
     );
+    assert.fileContent(
+      `packages/${packageName}/.pkgbuild/PKGBUILD`,
+      `pkgname=${packageName}-A`
+    );
+    assert.fileContent(
+      `packages/${packageName}/deploy/install_postscript.sh`,
+      `plugin_name="${packageName}`
+    )
   });
 
   it('should update files', () => {

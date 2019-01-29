@@ -1,0 +1,4 @@
+install_path: "/usr/local/easyops/applications/<%= packageName %>-A"
+user: easyops:easyops
+
+dependencies:

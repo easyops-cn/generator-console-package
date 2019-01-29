@@ -1,0 +1,3 @@
+source "$startdir"/../../../.pkgbuild/console-plugin/PKGBUILD
+pkgname=<%= packageName %>-A
+pkgver=0.0.0 # placeholder
