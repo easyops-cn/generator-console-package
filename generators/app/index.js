@@ -110,7 +110,7 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    const { packageName, componentName, scope, subPackagePath, isLibrary, projectNamePrefix, tsconfigPath, needPluginsConfig } = this.props;
+    const { packageName, componentName, scope, subPackagePath, isLibrary, projectNamePrefix, tsconfigPath, needPluginsConfig, needDeployConfig } = this.props;
     const destPath = `${subPackagePath}/${packageName}`;
     const srcPath = `${this.sourceRoot()}/${isLibrary ? 'library' : 'plugin'}`;
 
@@ -149,6 +149,16 @@ module.exports = class extends Generator {
 
     if (needPluginsConfig) {
       srcPairs['plugins-default.json'] = 'plugins-default.json';
+    }
+
+    // 是否需要 Easyops 部署规范需要的额外文件
+    if (needDeployConfig) {
+      tplPairs['.pkgbuild/PKGBUILD'] = '.pkgbuild/PKGBUILD';
+      tplPairs['deploy/install_postscript.sh'] = 'deploy/install_postscript.sh';
+      tplPairs['deploy/package.conf.yaml'] = 'deploy/package.conf.yaml';
+
+      srcPairs['deploy/update_postscript.sh'] = 'deploy/update_postscript.sh';
+      srcPairs['deploy/update_prescript.sh'] = 'deploy/update_prescript.sh';
     }
 
     Object.entries(srcPairs).forEach(([from, to]) => {
