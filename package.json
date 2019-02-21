@@ -41,6 +41,7 @@
   },
   "jest": {
     "testEnvironment": "node",
+    "testRegex": "/__tests__/",
     "collectCoverage": true,
     "collectCoverageFrom": [
       "generators/app/*.js"
