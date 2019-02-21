@@ -61,7 +61,7 @@
     "pretest": "eslint .",
     "precommit": "lint-staged",
     "prepublish": "cross-env NODE_ENV=testing yarn test",
-    "test": "cross-env NODE_ENV=testing jest",
+    "test": "cross-env NODE_ENV=testing jest --runInBand",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "license": "MIT"
