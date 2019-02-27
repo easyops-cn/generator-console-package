@@ -156,10 +156,15 @@ module.exports = class extends Generator {
     } else {
       // type === 'brick'
       srcPairs = {
+        'deploy/update_postscript.sh': 'deploy/update_postscript.sh',
+        'deploy/update_prescript.sh': 'deploy/update_prescript.sh',
         'tsconfig.json': 'tsconfig.json'
       };
 
       tplPairs = {
+        '.pkgbuild/PKGBUILD': '.pkgbuild/PKGBUILD',
+        'deploy/install_postscript.sh': 'deploy/install_postscript.sh',
+        'deploy/package.conf.yaml': 'deploy/package.conf.yaml',
         'package-sample.json': 'package.json',
         'README.md': 'README.md',
         'src/index.module.ts': 'src/index.module.ts',

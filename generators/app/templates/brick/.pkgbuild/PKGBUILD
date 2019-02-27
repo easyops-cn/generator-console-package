@@ -1,0 +1,3 @@
+source "$startdir"/../../../.pkgbuild/brick/PKGBUILD
+pkgname=<%= packageName %>-B
+pkgver=0.0.0 # placeholder

@@ -181,6 +181,11 @@ describe('generator-console-package:app:@brick', () => {
       `@brick/${packageName}/package.json`,
       `@brick/${packageName}/README.md`,
       `@brick/${packageName}/tsconfig.json`,
+      `@brick/${packageName}/.pkgbuild/PKGBUILD`,
+      `@brick/${packageName}/deploy/install_postscript.sh`,
+      `@brick/${packageName}/deploy/package.conf.yaml`,
+      `@brick/${packageName}/deploy/update_postscript.sh`,
+      `@brick/${packageName}/deploy/update_prescript.sh`,
 
       // Modified files:
       'angular.json',
