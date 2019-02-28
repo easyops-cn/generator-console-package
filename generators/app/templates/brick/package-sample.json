@@ -27,8 +27,5 @@
     "@uirouter/core": "5.0.19",
     "rxjs": "^6.4.0",
     "zone.js": "~0.8.26"
-  },
-  "dependencies": {
-    "@easyops/console-schema": "latest"
   }
 }
