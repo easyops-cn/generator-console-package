@@ -20,6 +20,6 @@ describe("<%= componentClassName %>", () => {
   });
 
   it("should create", () => {
-    expect(component).toBeTruthy();
+    expect(component).toMatchSnapshot();
   });
 });
