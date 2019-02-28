@@ -23,7 +23,7 @@
     "@angular/platform-browser": "7.1.4",
     "@angular/router": "7.1.4",
     "@easyops/console-plugin-core": "^5.0.0",
-    "@easyops/console-vendors": "^11.0.3",
+    "@easyops/console-vendors": "^12.0.0",
     "@uirouter/angular": "2.0.0",
     "@uirouter/core": "5.0.19",
     "rxjs": "^6.4.0",
