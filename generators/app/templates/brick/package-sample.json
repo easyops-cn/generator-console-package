@@ -1,5 +1,6 @@
 {
   "name": "<%= scope %>/<%= packageName %>",
+  "private": true,
   "version": "0.0.0",
   "main": "dist/main.js",
   "repository": "https://git.easyops.local/anyclouds/<%= repository %>",
