@@ -63,7 +63,7 @@ module.exports = class extends Generator {
         }
       ])
     );
-    const { packageName, moduleNamePrefix, isLibrary } = this.props;
+    const { packageName, moduleNamePrefix, type } = this.props;
 
     // generate flat module id
     // For design, @see https://github.com/ng-packagr/ng-packagr/blob/v4.4.1/docs/DESIGN.md#tools-and-implementation-details
@@ -90,7 +90,7 @@ module.exports = class extends Generator {
     );
 
     // component name
-    if (isLibrary) {
+    if (type === 'library' || type === 'brick') {
       Object.assign(
         this.props,
         await this.prompt([
@@ -110,14 +110,14 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    const { packageName, componentName, scope, subPackagePath, isLibrary, projectNamePrefix, tsconfigPath, needPluginsConfig, needDeployConfig } = this.props;
+    const { packageName, componentName, scope, subPackagePath, type, projectNamePrefix, tsconfigPath } = this.props;
     const destRoot = this.destinationRoot();
     const destPath = `${destRoot}/${subPackagePath}/${packageName}`;
-    const srcPath = `${this.sourceRoot()}/${isLibrary ? 'library' : 'plugin'}`;
+    const srcPath = `${this.sourceRoot()}/${type}`;
 
     let srcPairs, tplPairs;
 
-    if (isLibrary) {
+    if (type === 'library') {
       srcPairs = {
         'public_api.ts': 'public_api.ts'
       };
@@ -131,8 +131,11 @@ module.exports = class extends Generator {
           return acc;
         }, {})
       }
-    } else {
+    } else if (type === 'plugin') {
       srcPairs = {
+        'deploy/update_postscript.sh': 'deploy/update_postscript.sh',
+        'deploy/update_prescript.sh': 'deploy/update_prescript.sh',
+        'plugins-default.json': 'plugins-default.json',
         'tsconfig.json': 'tsconfig.json',
         'src/pages/index/index.component.html': 'src/pages/index/index.component.html',
         'src/pages/index/index.component.scss': 'src/pages/index/index.component.scss',
@@ -141,25 +144,36 @@ module.exports = class extends Generator {
       };
 
       tplPairs = {
+        '.pkgbuild/PKGBUILD': '.pkgbuild/PKGBUILD',
+        'deploy/install_postscript.sh': 'deploy/install_postscript.sh',
+        'deploy/package.conf.yaml': 'deploy/package.conf.yaml',
         'package-sample.json': 'package.json',
         'README.md': 'README.md',
         'src/index.module.ts': 'src/index.module.ts',
         'src/index.states.ts': 'src/index.states.ts',
+        'src/main.ts': 'src/main.ts',
       }
-    }
+    } else {
+      // type === 'brick'
+      srcPairs = {
+        'deploy/update_postscript.sh': 'deploy/update_postscript.sh',
+        'deploy/update_prescript.sh': 'deploy/update_prescript.sh',
+        'tsconfig.json': 'tsconfig.json'
+      };
 
-    if (needPluginsConfig) {
-      srcPairs['plugins-default.json'] = 'plugins-default.json';
-    }
-
-    // 是否需要 Easyops 部署规范需要的额外文件
-    if (needDeployConfig) {
-      tplPairs['.pkgbuild/PKGBUILD'] = '.pkgbuild/PKGBUILD';
-      tplPairs['deploy/install_postscript.sh'] = 'deploy/install_postscript.sh';
-      tplPairs['deploy/package.conf.yaml'] = 'deploy/package.conf.yaml';
-
-      srcPairs['deploy/update_postscript.sh'] = 'deploy/update_postscript.sh';
-      srcPairs['deploy/update_prescript.sh'] = 'deploy/update_prescript.sh';
+      tplPairs = {
+        '.pkgbuild/PKGBUILD': '.pkgbuild/PKGBUILD',
+        'deploy/install_postscript.sh': 'deploy/install_postscript.sh',
+        'deploy/package.conf.yaml': 'deploy/package.conf.yaml',
+        'package-sample.json': 'package.json',
+        'README.md': 'README.md',
+        'src/index.module.ts': 'src/index.module.ts',
+        'src/main.ts': 'src/main.ts',
+        ...['html', 'scss', 'spec.ts', 'ts'].reduce((acc, ext) => {
+          acc[`src/components/template.component.${ext}`] = `src/components/${componentName}.component.${ext}`;
+          return acc;
+        }, {})
+      }
     }
 
     Object.entries(srcPairs).forEach(([from, to]) => {
@@ -222,20 +236,10 @@ module.exports = class extends Generator {
 
   install() {
     const done = this.async();
-    const { subPackagePath, scope, packageName, isLibrary } = this.props;
-    const distPath = `${this.destinationRoot()}/${subPackagePath}/${packageName}`;
+    const { scope, packageName } = this.props;
     const childOfYarnLink = this.spawnCommand('lerna', ['exec', 'yarn', 'link', `--scope=${scope}/${packageName}`]);
     childOfYarnLink.on("close", () => {
-      if (isLibrary) {
-        done();
-      } else {
-        const childOfYarn = this.spawnCommand('yarn', [], {
-          cwd: distPath
-        });
-        childOfYarn.on("close", () => {
-          done();
-        });
-      }
+      done();
     });
   }
 };

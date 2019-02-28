@@ -177,9 +177,15 @@ describe('generator-console-package:app:@brick', () => {
       `@brick/${packageName}/src/components/${packageName}.component.spec.ts`,
       `@brick/${packageName}/src/components/${packageName}.component.ts`,
       `@brick/${packageName}/src/index.module.ts`,
+      `@brick/${packageName}/src/main.ts`,
       `@brick/${packageName}/package.json`,
-      `@brick/${packageName}/public_api.ts`,
       `@brick/${packageName}/README.md`,
+      `@brick/${packageName}/tsconfig.json`,
+      `@brick/${packageName}/.pkgbuild/PKGBUILD`,
+      `@brick/${packageName}/deploy/install_postscript.sh`,
+      `@brick/${packageName}/deploy/package.conf.yaml`,
+      `@brick/${packageName}/deploy/update_postscript.sh`,
+      `@brick/${packageName}/deploy/update_prescript.sh`,
 
       // Modified files:
       'angular.json',
@@ -212,18 +218,14 @@ describe('generator-console-package:app:@brick', () => {
       `@brick/${packageName}/src/index.module.ts`,
       `export class Brick${pascalCaseName}Module`
     );
+    assert.fileContent(
+      `@brick/${packageName}/src/main.ts`,
+      `platformBrick("@brick/${packageName}")`
+    );
     assert.jsonFileContent(
       `@brick/${packageName}/package.json`,
       {
         name: `@brick/${packageName}`
-      }
-    );
-    assert.noJsonFileContent(
-      `@brick/${packageName}/package.json`,
-      {
-        scripts: {
-          start: "WATCH_MODE=true node ../../ng-packagr"
-        }
       }
     );
   });
@@ -424,6 +426,7 @@ describe('generator-console-package:app:@console-plugin', () => {
       `packages/${packageName}/src/pages/index/index.component.ts`,
       `packages/${packageName}/src/index.module.ts`,
       `packages/${packageName}/src/index.states.ts`,
+      `packages/${packageName}/src/main.ts`,
       `packages/${packageName}/package.json`,
       `packages/${packageName}/plugins-default.json`,
       `packages/${packageName}/README.md`,
@@ -443,6 +446,10 @@ describe('generator-console-package:app:@console-plugin', () => {
     assert.fileContent(
       `packages/${packageName}/src/index.module.ts`,
       `export class ${pascalCaseName}Module`
+    );
+    assert.fileContent(
+      `packages/${packageName}/src/main.ts`,
+      `platformExtension("@console-plugin/${packageName}")`
     );
     assert.jsonFileContent(
       `packages/${packageName}/package.json`,
@@ -486,7 +493,7 @@ describe('generator-console-package:app:@console-plugin', () => {
   it('should run `lerna exec yarn link` and `yarn`', () => {
     expect(mockSpawn.calledWithExactly('lerna', ['exec', 'yarn', 'link', `--scope=@console-plugin/${packageName}`])).toBe(true);
 
-    expect(mockSpawn.callCount).toBe(2);
+    expect(mockSpawn.callCount).toBe(1);
   });
 });
 

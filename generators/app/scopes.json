@@ -2,39 +2,27 @@
   "@easyops": {
     "repository": "Console-W",
     "subPackagePath": "packages",
-    "removeScriptsStart": false,
     "tsconfigPath": true,
-    "isLibrary": true,
-    "needPluginsConfig": false,
-    "needDeployConfig": false
+    "type": "library"
   },
   "@brick": {
     "repository": "console-plugins",
     "subPackagePath": "@brick",
-    "removeScriptsStart": true,
     "tsconfigPath": false,
-    "isLibrary": true,
-    "needPluginsConfig": false,
+    "type": "brick",
     "projectNamePrefix": "brick-",
-    "moduleNamePrefix": "Brick",
-    "needDeployConfig": false
+    "moduleNamePrefix": "Brick"
   },
   "@plugin-common": {
     "repository": "console-plugins",
     "subPackagePath": "@plugin-common",
-    "removeScriptsStart": false,
     "tsconfigPath": false,
-    "isLibrary": true,
-    "needPluginsConfig": false,
-    "needDeployConfig": false
+    "type": "library"
   },
   "@console-plugin": {
     "repository": "console-plugins",
     "subPackagePath": "packages",
-    "removeScriptsStart": false,
     "tsconfigPath": false,
-    "isLibrary": false,
-    "needPluginsConfig": true,
-    "needDeployConfig": true
+    "type": "plugin"
   }
 }

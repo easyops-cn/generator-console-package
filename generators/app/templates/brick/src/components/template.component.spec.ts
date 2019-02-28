@@ -1,4 +1,3 @@
-require("jest-preset-angular");
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { <%= componentClassName %> } from "./<%= componentName %>.component";
 
