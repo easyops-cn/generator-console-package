@@ -486,8 +486,6 @@ describe('generator-console-package:app:@console-plugin', () => {
   it('should run `lerna exec yarn link` and `yarn`', () => {
     expect(mockSpawn.calledWithExactly('lerna', ['exec', 'yarn', 'link', `--scope=@console-plugin/${packageName}`])).toBe(true);
 
-    expect(mockSpawn.calledWithExactly('yarn', [], { cwd: `packages/${packageName}` })).toBe(true);
-
     expect(mockSpawn.callCount).toBe(2);
   });
 });

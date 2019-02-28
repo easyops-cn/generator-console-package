@@ -111,7 +111,8 @@ module.exports = class extends Generator {
 
   writing() {
     const { packageName, componentName, scope, subPackagePath, isLibrary, projectNamePrefix, tsconfigPath, needPluginsConfig, needDeployConfig } = this.props;
-    const destPath = `${subPackagePath}/${packageName}`;
+    const destRoot = this.destinationRoot();
+    const destPath = `${destRoot}/${subPackagePath}/${packageName}`;
     const srcPath = `${this.sourceRoot()}/${isLibrary ? 'library' : 'plugin'}`;
 
     let srcPairs, tplPairs;
@@ -174,7 +175,7 @@ module.exports = class extends Generator {
 
     if (tsconfigPath) {
       const tsconfigJson = 'tsconfig.json';
-      this.fs.copy(tsconfigJson, tsconfigJson, {
+      this.fs.copy(`${this.destinationRoot()}/${tsconfigJson}`, `${destRoot}/${tsconfigJson}`, {
         process: content => {
           const tsconfig = JSON.parse(content);
           tsconfig.compilerOptions.paths[`${scope}/${packageName}`] = [`${subPackagePath}/${packageName}/public_api.ts`];
@@ -185,7 +186,7 @@ module.exports = class extends Generator {
 
     const angularPath = 'angular.json';
     const projectName = (projectNamePrefix === undefined ? '' : projectNamePrefix) + packageName;
-    this.fs.copy(angularPath, angularPath, {
+    this.fs.copy(`${this.destinationRoot()}/${angularPath}`, `${destRoot}/${angularPath}`, {
       process: content => {
         const angular = JSON.parse(content);
         angular.projects[projectName] = {
@@ -222,7 +223,7 @@ module.exports = class extends Generator {
   install() {
     const done = this.async();
     const { subPackagePath, scope, packageName, isLibrary } = this.props;
-    const distPath = `${subPackagePath}/${packageName}`;
+    const distPath = `${this.destinationRoot()}/${subPackagePath}/${packageName}`;
     const childOfYarnLink = this.spawnCommand('lerna', ['exec', 'yarn', 'link', `--scope=${scope}/${packageName}`]);
     childOfYarnLink.on("close", () => {
       if (isLibrary) {
