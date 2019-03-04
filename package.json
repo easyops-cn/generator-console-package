@@ -27,7 +27,7 @@
     "jest": "24.1.0",
     "lint-staged": "8.1.5",
     "prettier": "1.16.4",
-    "sinon": "7.2.6",
+    "sinon": "7.2.7",
     "yeoman-assert": "3.1.1",
     "yeoman-test": "1.9.1"
   },
