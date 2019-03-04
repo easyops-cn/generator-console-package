@@ -3,5 +3,5 @@ user: easyops:easyops
 
 dependencies:
   - name: console
-    version: "^4.0.0"
+    version: "^5.0.0"
     local_deploy: true
