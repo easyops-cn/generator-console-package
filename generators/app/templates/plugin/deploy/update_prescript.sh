@@ -1,4 +1,4 @@
 #!/bin/bash
 
-# 为保证一致，直接用install_postscript.sh
-bash ./deploy/install_postscript.sh
+# 先清理原有的main-xxxx.js
+rm -rf ./dist/*
