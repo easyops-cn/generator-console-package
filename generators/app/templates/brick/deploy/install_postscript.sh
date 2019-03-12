@@ -6,11 +6,11 @@ install_path="${install_base}/bricks/${plugin_name}-B" #多加了个-B后缀，�
 
 console="console"                       # console目录应用
 scope="@brick"
-plugins_dir="${install_base}/${console}/src/www/plugins/"
-builtin_plugins_dir="${install_base}/${console}/src/www/builtin-plugins/"
+plugins_dir="${install_base}/${console}/src/www/plugins/${scope}/"
+builtin_plugins_dir="${install_base}/${console}/src/www/builtin-plugins/${scope}/"
 
 # 删除原有放在buildin-plugins的插件，小产品安装的都统一放在plugins
-rm -rf "${builtin_plugins_dir:?}/${scope}/${plugin_name}"
+rm -rf "${builtin_plugins_dir:?}/${plugin_name}"
 # 删除上一个版本
 rm -rf "${plugins_dir:?}/${plugin_name}"
 
